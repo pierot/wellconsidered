@@ -3,15 +3,14 @@
  */
  
 /**
- * 
- 	var emailPattern_str:String = '^[a-zA-Z0-9_.-]{1,,30}[@]{1}[a-zA-Z0-9_.-]{1,,50}$';
- 	var flags:String = 'gim'; // global, case Insensitive, multiline
- 	var email_txt:String = 'pieter@wellconsidered.be';
- 		
- 	var email_re = new RegExp(emailPattern_str, flags);
- 	var result = email_re.test(email_txt);
- 		
- 	trace(result);	
+ *	var emailPattern_str:String = '^[a-zA-Z0-9_.-]{1,,30}[@]{1}[a-zA-Z0-9_.-]{1,,50}$';
+ *	var flags:String = 'gim'; // global, case Insensitive, multiline
+ *	var email_txt:String = 'pieter@wellconsidered.be';
+ *		
+ *	var email_re = new RegExp(emailPattern_str, flags);
+ *	var result = email_re.test(email_txt);
+ *		
+ *	trace(result);	
  *	-> true
  */
 
