@@ -129,6 +129,8 @@ class be.wellconsidered.utils.StringUtils
 	
 	/**
 	 * Correct HTML
+	 *
+	 * @return		returns string with correct html
 	 */
 	public static function corrHTML(param_txt:String):String
 	{
