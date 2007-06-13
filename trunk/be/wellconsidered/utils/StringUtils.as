@@ -30,6 +30,7 @@ class be.wellconsidered.utils.StringUtils
 			{
 				while (trimmed.indexOf(chars[i]) == 0){ trimmed = replace(chars[i], "", trimmed); }
 			}
+			
 			// END   
 			if (trimmed.indexOf(chars[i]) == trimmed.length - 2)
 			{
@@ -64,11 +65,11 @@ class be.wellconsidered.utils.StringUtils
 	 * @return		returns right trimmed string 	 */
 	public static function trimRight(trimmed:String):String
 	{
-        for (var i:Number = trimmed.length; i > 0; i--) {
-                if (trimmed.charCodeAt (i) > 32) {
-                        return trimmed.substring (0, i + 1);
-                }
-        }
+		for (var i:Number = trimmed.length; i > 0; i--) {
+			if (trimmed.charCodeAt (i) > 32) {
+				return trimmed.substring (0, i + 1);
+			}
+		}
         		
 		return trimmed
 	}	
@@ -83,11 +84,11 @@ class be.wellconsidered.utils.StringUtils
 	 */	
 	public static function trimLeft(trimmed:String):String
 	{
-        for (var i:Number = 0; i < trimmed.length; i++) {
-                if (trimmed.charCodeAt (i) > 32) {
-                        return trimmed.substr (i, trimmed.length);
-                }
-        }
+		for (var i:Number = 0; i < trimmed.length; i++) {
+			if (trimmed.charCodeAt (i) > 32) {
+				return trimmed.substr (i, trimmed.length);
+			}
+		}
         		
 		return trimmed
 	}
@@ -124,5 +125,53 @@ class be.wellconsidered.utils.StringUtils
 		} while (str.indexOf(arg_search) != -1);
 		
 		return (newText + str);
+	}	
+	
+	/**
+	 * Correct HTML
+	 */
+	public static function corrHTML(param_txt:String):String
+	{
+		param_txt = replace("&deg;", "°", param_txt);
+		param_txt = replace("&uacute;", "ú", param_txt);
+		param_txt = replace("&ntilde;", "ñ", param_txt);
+		param_txt = replace("&aacute;", "á", param_txt);
+		param_txt = replace("&oacute;", "ó", param_txt);
+		param_txt = replace("&iacute;", "í", param_txt);
+		param_txt = replace("&agrave;", "à", param_txt);
+		param_txt = replace("&egrave;", "è", param_txt);
+		param_txt = replace("é&iexcl;", "a", param_txt);
+		param_txt = replace("&rsquo;", "'", param_txt);
+		param_txt = replace("&ldquo;", "'", param_txt);
+		param_txt = replace("&rdquo;", "'", param_txt);
+		param_txt = replace("&euro;", "€", param_txt);
+		param_txt = replace("&hellip;", "...", param_txt);
+		param_txt = replace("$egrave;", "è", param_txt);
+		param_txt = replace("$reg;", "®", param_txt);
+		param_txt = replace("&iuml;", "ï", param_txt);
+		param_txt = replace("&euml;", "ë", param_txt);
+		param_txt = replace("&eacute;", "é", param_txt);
+		param_txt = replace("&amp;", "&", param_txt);
+		param_txt = replace("&lt;", "<", param_txt);
+		param_txt = replace("&gt;", ">", param_txt);
+		param_txt = replace("&#039;", "'", param_txt);
+		
+		param_txt = replace("&quot;", "'", param_txt);
+		param_txt = replace("&nbsp;", " ", param_txt);
+		param_txt = replace("strong", "b", param_txt);
+		param_txt = replace("&copy;", "", param_txt);
+		param_txt = replace("&laquo;", "\"", param_txt);
+		param_txt = replace("&raquo;", "\"", param_txt);
+		param_txt = replace("&Atilde;", "é", param_txt);
+		param_txt = replace("&acirc;", "'", param_txt);
+		
+		param_txt = replace("<p>", "", param_txt);
+		param_txt = replace("</p>", "<br />", param_txt);
+		param_txt = replace("\n", "", param_txt);
+		param_txt = replace("\r", "", param_txt);
+		param_txt = replace("<b>", "<span class=\"vet\">", param_txt);
+		param_txt = replace("</b>", "</span>", param_txt);
+		
+		return param_txt;
 	}	
 }
