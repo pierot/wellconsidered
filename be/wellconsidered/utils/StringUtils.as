@@ -4,9 +4,9 @@
 class be.wellconsidered.utils.StringUtils
 {
 	/**
-	 * Constructor	 */
-	private static function StringUtils(){}
-	
+	 * Constructor
+	 */
+	private function StringUtils(){}
 	
 	/**
 	 * Remove specified characters
@@ -14,7 +14,8 @@ class be.wellconsidered.utils.StringUtils
 	 * @param	trimmed				String to be processed  
 	 * @param	chars				Array of chars to be removed from string 
 	 * 
-	 * @return		returns the string with the chars 	 */
+	 * @return		returns the string with the chars 
+	 */
 	public static function removeChars(trimmed:String, chars:Array):String
 	{
 		for (var i:Number = 0; i < chars.length; i++)
@@ -41,13 +42,13 @@ class be.wellconsidered.utils.StringUtils
 		return trimmed;
 	}
 	
-	
 	/**
 	 * Trim whitespaces : left and right
 	 * 
 	 * @param	trimmed				String to be trimmed 
 	 * 
-	 * @return		returns trimmed string (both sides) 	 */
+	 * @return		returns trimmed string (both sides) 
+	 */
 	public static function trimSpace(trimmed:String):String
 	{
 		trimmed = trimRight(trimmed);
@@ -56,13 +57,13 @@ class be.wellconsidered.utils.StringUtils
 		return trimmed;
 	}
 	
-	
 	/**
 	 * Trim whitespaces from the right
 	 * 
 	 * @param	trimmed				String to be trimmed 
 	 * 
-	 * @return		returns right trimmed string 	 */
+	 * @return		returns right trimmed string 
+	 */
 	public static function trimRight(trimmed:String):String
 	{
 		for (var i:Number = trimmed.length; i > 0; i--) {
@@ -73,7 +74,6 @@ class be.wellconsidered.utils.StringUtils
         		
 		return trimmed
 	}	
-	
 	
 	/**
 	 * Trim whitespaces from the left
@@ -93,7 +93,6 @@ class be.wellconsidered.utils.StringUtils
 		return trimmed
 	}
 	
-	
 	/**
 	 * Trim specific character(s) with another character(s)
 	 * 
@@ -101,7 +100,8 @@ class be.wellconsidered.utils.StringUtils
 	 * @param	param_replace			String for replacement 
 	 * @param	param_str				String where to search in  
 	 * 
-	 * @return		returns string with replaced chars 	 */
+	 * @return		returns string with replaced chars 
+	 */
 	public static function replace(param_search:String, param_replace:String, param_str:String):String
 	{
 		var str:String = param_str;
