@@ -2,14 +2,13 @@
  * @author pieter michels
  */
  
-
 class be.wellconsidered.utils.SetTimeout
 {
 	/**
-	 * Vars	 */
+	 * Vars
+	 */
 	public var _timerInterval:Number;
 	public var _callBackArgs:Array;
-	
 	
 	/**
 	* Constructor
@@ -30,7 +29,6 @@ class be.wellconsidered.utils.SetTimeout
 			clearInterval($self._timerInterval);
 		}, delay);
 	}
-	
 	
 	/**
 	* Stop de huidige timeout.
