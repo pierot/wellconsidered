@@ -3,6 +3,7 @@ class be.wellconsidered.events.Proxy
 {
 	public static function create(oTarget:Object, fFunction:Function):Function
 	{
+	// jhallo
 		var aParameters:Array = new Array();
 		
 		for(var i:Number = 2; i < arguments.length; i++)
