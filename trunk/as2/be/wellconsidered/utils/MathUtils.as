@@ -7,8 +7,7 @@ class be.wellconsidered.utils.MathUtils extends Math
 	/**
 	 * Constructor
 	 */
-	private static function MathUtils(){}
-	
+	function MathUtils(){}
 	
 	/**
 	 * Round to specific decimal
@@ -22,4 +21,11 @@ class be.wellconsidered.utils.MathUtils extends Math
 	{
 		return int((param_num) * Math.pow(10, param_count)) / Math.pow(10, param_count);
 	}
+	
+	public static function createID(param_length:Number):String
+	{
+		var tmp:Number = Math.round(Math.random() * 999999);
+		
+		return ("" + tmp).length < 6 ? "0" + tmp : "" + tmp;
+	}	
 }
