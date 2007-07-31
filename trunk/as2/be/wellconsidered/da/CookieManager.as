@@ -1,16 +1,15 @@
-﻿ 
-class be.wellconsidered.da.CookieManager
+﻿class be.wellconsidered.da.CookieManager
 {
 	/**
-	 * Vars	 */
+	 * Vars
+	 */
 	private static var _ckie_name:String = "";
 	private static var _ckie_so:SharedObject;
 	
-	
 	/**
-	 * Constructor	 */
+	 * Constructor
+	 */
 	private function CookieManager(){}
-	
 	
 	/**
 	 * Create Cookie
@@ -27,25 +26,25 @@ class be.wellconsidered.da.CookieManager
 		{
 		    for (var i in param_ifo)
 		    {
-		        trace(param_ifo[i], LogWrapper.WARN);
+		        trace(param_ifo[i]);
 		    }
 		};
 	}	
 	
-	
 	/**
-	 * Read Cookie	 */
-	public static function read(param_var:String):String
+	 * Read Cookie
+	 */
+	public static function read(param_var:String):Object
 	{
 		trace("READ COOKIE (" + param_var + ")");
 		
 		return _ckie_so.data[param_var];
 	}
 	
-	
 	/**
-	 * Write to cookie	 */
-	public static function write(param_var:String, param_content:String):Void
+	 * Write to cookie
+	 */
+	public static function write(param_var:String, param_content:Object):Void
 	{
 		trace("WRITE TO COOKIE (" + param_var + "->" + param_content + ")");
 		
@@ -64,9 +63,9 @@ class be.wellconsidered.da.CookieManager
 		}
 	}
 	
-	
 	/**
-	 * Clear Cookie	 */
+	 * Clear Cookie
+	 */
 	public static function clear():Void
 	{
 		trace("CLEAR COOKIE");
