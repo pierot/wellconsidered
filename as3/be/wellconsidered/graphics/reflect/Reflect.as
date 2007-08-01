@@ -4,88 +4,89 @@ package be.wellconsidered.graphics.reflect
 	import flash.display.DisplayObject;
 	import flash.display.BitmapData;
 	import flash.display.Bitmap;
+	
 	import flash.geom.Matrix;
+	
 	import flash.display.GradientType;
 	import flash.display.SpreadMethod;
+	
 	import flash.utils.setInterval;
 	import flash.utils.clearInterval;
 	
 	public class Reflect extends MovieClip
 	{
 		// Created By Ben Pritchard of Pixelfumes 2007
-		// Thanks to Mim, Jasper, Jason Merrill and all the others who 
-		// have contributed to the improvement of this class
+		// Thanks to Mim, Jasper, Jason Merrill and all the others who have contributed to the improvement of this class
 		
-		//static var for the version of this class
+		// static var for the version of this class
 		private static var VERSION:String = "4.0";
 		
-		//reference to the movie clip we are reflecting
+		// reference to the movie clip we are reflecting
 		private var mc:MovieClip;
 		
-		//the BitmapData object that will hold a visual copy of the mc
+		// the BitmapData object that will hold a visual copy of the mc
 		private var mcBMP:BitmapData;
 		
-		//the BitmapData object that will hold the reflected image
+		// the BitmapData object that will hold the reflected image
 		private var reflectionBMP:Bitmap;
 		
-		//the clip that will act as out gradient mask
+		// the clip that will act as out gradient mask
 		private var gradientMask_mc:MovieClip;
 		
-		//how often the reflection should update (if it is video or animated)
+		// how often the reflection should update (if it is video or animated)
 		private var updateInt:Number;
 		
-		//the size the reflection is allowed to reflect within
+		// the size the reflection is allowed to reflect within
 		private var bounds:Object;
 		
-		//the distance the reflection is vertically from the mc
+		// the distance the reflection is vertically from the mc
 		private var distance:Number = 0;
 	
 	
 		function Reflect(args:Object)
 		{
-			/*the args object passes in the following variables
-			/we set the values of our internal vars to math the args*/
-			//the clip being reflected
+			// the args object passes in the following variables we set the values of our internal vars to math the args
+			// the clip being reflected
 			mc = args.mc;
 			
-			//the alpha level of the reflection clip
+			// the alpha level of the reflection clip
 			var alpha:Number = args.alpha/100;
 			
-			//the ratio opaque color used in the gradient mask
+			// the ratio opaque color used in the gradient mask (0 - 255)
 			var ratio:Number = args.ratio;
 			
-			//update time interval
+			// update time interval ( < 1 )
 			var updateTime:Number = args.updateTime;
 			
-			//the distance at which the reflection visually drops off at
+			// the distance at which the reflection visually drops off at ( < 1 )
 			var reflectionDropoff:Number = args.reflectionDropoff;
 			
-			//the distance the reflection starts from the bottom of the mc
+			// the distance the reflection starts from the bottom of the mc
 			var distance:Number = args.distance;
 			
-			//store width and height of the clip
-			var mcHeight = mc.height;
-			var mcWidth = mc.width;
+			// store width and height of the clip
+			var mcHeight:Number = mc.height;
+			var mcWidth:Number = mc.width;
 			
-			//store the bounds of the reflection
+			// store the bounds of the reflection
 			bounds = new Object();
 			bounds.width = mcWidth;
 			bounds.height = mcHeight;
 			
-			//create the BitmapData that will hold a snapshot of the movie clip
+			// create the BitmapData that will hold a snapshot of the movie clip
 			mcBMP = new BitmapData(bounds.width, bounds.height, true, 0xFFFFFF);
 			mcBMP.draw(mc);
 			
-			//create the BitmapData the will hold the reflection
+			// create the BitmapData the will hold the reflection
 			reflectionBMP = new Bitmap(mcBMP);
 			
-			//flip the reflection upside down
+			// flip the reflection upside down
 			reflectionBMP.scaleY = -1;
 			
-			//move the reflection to the bottom of the movie clip
+			// move the reflection to the bottom of the movie clip
 			reflectionBMP.y = (bounds.height*2) + distance;
 			
-			//add the reflection to the movie clip's Display Stack
+			// add the reflection to the movie clip's Display Stack
 			var reflectionBMPRef:DisplayObject = mc.addChild(reflectionBMP);
 			reflectionBMPRef.name = "reflectionBMP";
 			
@@ -109,7 +110,7 @@ package be.wellconsidered.graphics.reflect
 		  	//set the height of the Matrix used for the gradient mask
 			var matrixHeight:Number;
 			
-			if (reflectionDropoff<=0)
+			if (reflectionDropoff <= 0)
 			{
 				matrixHeight = bounds.height;
 			}
@@ -122,7 +123,7 @@ package be.wellconsidered.graphics.reflect
 		  	
 		  	//create the gradient fill
 			gradientMask_mc.graphics.beginGradientFill(fillType, colors, alphas, ratios, matr, spreadMethod);  
-		    	gradientMask_mc.graphics.drawRect(0,0,bounds.width,bounds.height);
+		    gradientMask_mc.graphics.drawRect(0,0,bounds.width,bounds.height);
 		
 			//position the mask over the reflection clip			
 			gradientMask_mc.y = mc.getChildByName("reflectionBMP").y - mc.getChildByName("reflectionBMP").height;
@@ -162,7 +163,7 @@ package be.wellconsidered.graphics.reflect
 			mcBMP.draw(mc);
 		}
 		
-		private function update(mc):void 
+		private function update(mc:MovieClip):void 
 		{
 			//updates the reflection to visually match the movie clip
 			mcBMP = new BitmapData(bounds.width, bounds.height, true, 0xFFFFFF);
