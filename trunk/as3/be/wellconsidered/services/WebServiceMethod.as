@@ -1,4 +1,4 @@
-package  
+package be.wellconsidered.services
 {
 	public class WebServiceMethod
 	{

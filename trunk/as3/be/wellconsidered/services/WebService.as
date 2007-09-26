@@ -1,4 +1,4 @@
-package
+package be.wellconsidered.services
 {
 	import flash.net.*;
 	import flash.xml.XMLDocument;
