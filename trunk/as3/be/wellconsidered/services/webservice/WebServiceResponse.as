@@ -8,6 +8,7 @@ package be.wellconsidered.services.webservice
 	{
 		private var _resp_xml:XML;
 		private var _data:Object;
+		private var _method_name:String;
 		
 		public function WebServiceResponse(param_xml:XML)
 		{
@@ -19,44 +20,42 @@ package be.wellconsidered.services.webservice
 		private function createResponseObject():void
 		{
 			var soap_nms:Namespace = new Namespace("http://www.w3.org/2003/05/soap-envelope");
-			var body_resp_xml:XML = _resp_xml.soap_nms::Body[0].children()[0];
-			var body_res_xml:XML = body_resp_xml.children()[0];
-			var body_res_axml:Number = body_res_xml.children().length();
-			var body_res_xmllst:XMLList;
+			var default_nms:Namespace = new Namespace("http://tempuri.org/");
 			
-			if(body_res_axml > 1)
+			var body_resp_xml:XMLList = _resp_xml.soap_nms::Body.children();
+			_method_name = body_resp_xml[0].localName().split("Response")[0];
+			
+			var result_xmllst:XMLList = body_resp_xml.default_nms::[_method_name + "Result"].children();
+			
+			if(result_xmllst.length() > 1)
 			{
 				// HET IS EEN ARRAY VAN ELEMENTEN
 				_data = new Array();
 				
-				for(var i:Number = 0; i < body_res_axml; i++)
+				for(var i:Number = 0; i < result_xmllst.length(); i++)
 				{
-					body_res_xmllst = body_res_xml.children()[i].children();
-						
-					_data.push(createResObject(body_res_xmllst));
+					_data.push(createResObject(result_xmllst[i].children()));
 				}
 			}
 			else
 			{
-				// 1 ENKEL OBJECT
-				body_res_xmllst = body_res_xml.children()[0].children();
-				
-				_data = createResObject(body_res_xmllst);				
+				// 1 ENKEL OBJECT			
+				_data = createResObject(result_xmllst[0].children());				
 			}
 		}
 		
 		private function createResObject(param_xmllst:XMLList):Object
 		{
-			var tmp_res:Object = new Object();
+			var res:Object = new Object();
 			
 			for each(var el:XML in param_xmllst)
 			{
-				tmp_res[el.localName()] = el.toString();
+				res[el.localName()] = el.toString();
 				
 				// trace(el.localName() + " -> " + _data[el.localName()] + " (" + (typeof _data[el.localName()]) + ")");
 			}	
 			
-			return tmp_res;
+			return res;
 		}
 	
 		public function get data():Object
