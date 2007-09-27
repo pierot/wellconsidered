@@ -1,3 +1,7 @@
+/**
+* @author Pieter Michels
+*/
+
 package be.wellconsidered.services
 {
 	import flash.net.*;
@@ -8,10 +12,12 @@ package be.wellconsidered.services
 	import flash.events.HTTPStatusEvent;
 	import flash.events.EventDispatcher;
 	
+	import be.wellconsidered.services.webservice.*;
+	
 	public class WebService extends EventDispatcher
 	{
-		private var urlLoaderService:URLLoader;
-		private var urlRequest:URLRequest;
+		private var url_loader:URLLoader;
+		private var url_request:URLRequest;
 		
 		private var urllserv_desc:URLLoader;
 		
@@ -20,14 +26,14 @@ package be.wellconsidered.services
 		public function WebService(param_ws_url:String)
 		{
 			// PREPARE METHOD CALLING
-			urlRequest = new URLRequest(param_ws_url);
-			urlRequest.method = URLRequestMethod.POST;
-			urlRequest.requestHeaders.push(new URLRequestHeader("Content-Type", "application/soap+xml"));
+			url_request = new URLRequest(param_ws_url);
+			url_request.method = URLRequestMethod.POST;
+			url_request.requestHeaders.push(new URLRequestHeader("Content-Type", "application/soap+xml"));
 			
-			urlLoaderService = new URLLoader();
-			urlLoaderService.dataFormat = URLLoaderDataFormat.TEXT;
-			urlLoaderService.addEventListener("complete", onServiceLoaded);
-			urlLoaderService.addEventListener("ioError", onServiceFailed);
+			url_loader = new URLLoader();
+			url_loader.dataFormat = URLLoaderDataFormat.TEXT;
+			url_loader.addEventListener("complete", onServiceLoaded);
+			url_loader.addEventListener("ioError", onServiceFailed);
 			
 			// LOAD WS DESCRIPTION
 			loadWSDescr(param_ws_url);
@@ -83,19 +89,22 @@ package be.wellconsidered.services
 			dispatchEvent(new WebServiceEvent(WebServiceEvent.INITFAILED, e));
 		}		
 		
-		public function loadMethod(param_method:String, ... args):void
+		public function loadMethod(param_method_name:String, ... args):void
 		{
-			urlRequest.data = createSoapCall(param_method, args);
+			var new_call:WebServiceCall = new WebServiceCall(param_method_name, args, getServiceMethod(param_method_name));
 			
-			urlLoaderService.load(urlRequest);
+			url_request.data = new_call.call;
+			
+			url_loader.load(url_request);
 		}
 		
 		private function onServiceLoaded(e:Event):void
 		{
+			var response:WebServiceResponse = new WebServiceResponse(new XML(url_loader.data));
 			
-			dispatchEvent(new WebServiceEvent(WebServiceEvent.COMPLETE, new XML(urlLoaderService.data)));
+			dispatchEvent(new WebServiceEvent(WebServiceEvent.COMPLETE, response.data));
 			
-			urlLoaderService.data = null;
+			url_loader.data = null;
 		}
 		
 		private function onServiceFailed(e:ErrorEvent):void
@@ -103,32 +112,7 @@ package be.wellconsidered.services
 			dispatchEvent(new WebServiceEvent(WebServiceEvent.FAILED, e));
 		}
 		
-		private function createSoapCall(method:String, args:Array):XML
-		{
-			var method_obj:WebServiceMethod = getServiceMethods(method);
-			var add_node:XML = <{method} xmlns="http://tempuri.org/" />
-			
-			for(var j:int = 0; j < method_obj._args.length; j++)
-			{
-				add_node.appendChild(
-					<{method_obj._args[j]}>
-						{args[j]}
-					</{method_obj._args[j]}>
-					);
-			}
-			
-			var r_xml:XML = 
-				<soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope">
-					<soap12:Body>
-						{add_node}
-					</soap12:Body>
-				</soap12:Envelope>
-				;
-
-			return r_xml;
-		}
-		
-		private function getServiceMethods(param_name:String):WebServiceMethod
+		private function getServiceMethod(param_name:String):WebServiceMethod
 		{
 			for(var i:int = 0; i < methods_arr.length; i++)
 			{
