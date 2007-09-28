@@ -27,10 +27,12 @@ package be.wellconsidered.services.webservice
 			
 			for(var j:int = 0; j < _wsmethod._args.length; j++)
 			{
+				var ws_arg:WebServiceArgument = _wsmethod._args[j];
+				
 				add_node.appendChild(
-					<{_wsmethod._args[j]}>
+					<{ws_arg.name}>
 						{_args[j]}
-					</{_wsmethod._args[j]}>
+					</{ws_arg.name}>
 					);
 			}
 			
