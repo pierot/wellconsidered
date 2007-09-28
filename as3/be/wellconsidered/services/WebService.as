@@ -21,7 +21,7 @@ package be.wellconsidered.services
 		
 		private var urllserv_desc:URLLoader;
 		
-		private var methods_arr:Array;
+		private var method_col:WebServiceMethodCollection;
 		
 		public function WebService(param_ws_url:String)
 		{
@@ -52,34 +52,8 @@ package be.wellconsidered.services
 		
 		private function onDescrLoaded(e:Event):void
 		{
-			methods_arr = new Array();
-			
-			var descr_xml:XML = new XML(urllserv_desc.data);
-			var types_nms:Namespace = descr_xml.namespace("wsdl");
-			
-			var types_xml:XML = descr_xml.types_nms::types[0];
-			var s_nms:Namespace = types_xml.namespace("s");
-			
-			var els_xml:XML = types_xml.s_nms::schema[0];
-			
-			for each(var i:XML in els_xml.s_nms::element)
-			{
-				try
-				{
-					var method:WebServiceMethod = new WebServiceMethod(i.@name);
-					
-					var tmp:XML = i.s_nms::complexType[0].s_nms::sequence[0];
-					
-					for each(var j:XML in tmp.s_nms::element)
-					{				
-						method.addArg(j.@name);
-					}
-					
-					methods_arr.push(method);
-				}
-				catch(e:Error)
-				{/*trace(e.message);*/}
-			}
+			method_col = new WebServiceMethodCollection();
+			method_col.extract(new XML(urllserv_desc.data));
 			
 			dispatchEvent(new WebServiceEvent(WebServiceEvent.INITED));
 		}	
@@ -91,7 +65,7 @@ package be.wellconsidered.services
 		
 		public function loadMethod(param_method_name:String, ... args):void
 		{
-			var new_call:WebServiceCall = new WebServiceCall(param_method_name, args, getServiceMethod(param_method_name));
+			var new_call:WebServiceCall = new WebServiceCall(param_method_name, args, method_col.getMethodObject(param_method_name));
 			
 			url_request.data = new_call.call;
 			
@@ -110,16 +84,6 @@ package be.wellconsidered.services
 		private function onServiceFailed(e:ErrorEvent):void
 		{
 			dispatchEvent(new WebServiceEvent(WebServiceEvent.FAILED, e));
-		}
-		
-		private function getServiceMethod(param_name:String):WebServiceMethod
-		{
-			for(var i:int = 0; i < methods_arr.length; i++)
-			{
-				if(methods_arr[i]._name == param_name){ return methods_arr[i]; break; }
-			}
-			
-			return null;
 		}
 	}
 }

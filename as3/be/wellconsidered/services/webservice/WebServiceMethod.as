@@ -16,9 +16,9 @@ package be.wellconsidered.services.webservice
 			_args = new Array();
 		}
 			
-		public function addArg(param_name:String):void
+		public function addArg(param_arg:WebServiceArgument):void
 		{
-			_args.push(param_name);
+			_args.push(param_arg);
 		}
 	}
 }
