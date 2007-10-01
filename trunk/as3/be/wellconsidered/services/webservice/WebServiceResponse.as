@@ -47,7 +47,7 @@ package be.wellconsidered.services.webservice
 			{
 				trace("-> ARRAY");
 				
-				// HET IS EEN ARRAY VAN ELEMENTEN
+				// ARRAY
 				_data = new Array();
 				
 				for(var i:Number = 0; i < result_xmllst.length(); i++)
@@ -59,7 +59,7 @@ package be.wellconsidered.services.webservice
 			{
 				trace("-> 1 OBJECT + PROPS");
 				
-				// 1 ENKEL OBJECT MET MEERDERE PROPERTIES
+				// 1 OBJECT AND MULTIPLE PROPERTIES
 				_data = createResObject(result_xmllst[0].children(), resp_obj._pars);			
 			}
 			else
@@ -68,7 +68,7 @@ package be.wellconsidered.services.webservice
 				
 				var wsa:WebServiceArgument = resp_obj._pars[0];
 				
-				// 1 ENKEL OBJECT MET 1 ARGUMENT
+				// 1 OBJECT AND 1 ARGUMENT
 				_data = castType(result_xmllst[0].toXMLString(), wsa.type);
 			}
 		}
@@ -77,7 +77,7 @@ package be.wellconsidered.services.webservice
 		{
 			if(param_xmllst.length() > 1)
 			{
-				// EEN VOLLEDIG OBJECT
+				// FULL OBJECT
 				var res:Object = new Object();
 				
 				for(var i:int = 0; i < param_xmllst.length(); i++)
