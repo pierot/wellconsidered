@@ -12,10 +12,10 @@ package be.wellconsidered.services.webservice
 		private var _args:Array;
 		private var _wsmethod:WebServiceMethod;
 		
-		public function WebServiceCall(param_method:String, param_args:Array, param_wsmethod:WebServiceMethod)
+		public function WebServiceCall(param_method:String, param_wsmethod:WebServiceMethod, ... args)
 		{
 			_method = param_method;
-			_args = param_args;
+			_args = args;
 			_wsmethod = param_wsmethod;
 			
 			createSoapCall();
@@ -24,7 +24,7 @@ package be.wellconsidered.services.webservice
 		private function createSoapCall():void
 		{
 			var add_node:XML = <{_method} xmlns="http://tempuri.org/" />
-			
+			trace(_wsmethod);
 			for(var j:int = 0; j < _wsmethod._args.length; j++)
 			{
 				var ws_arg:WebServiceArgument = _wsmethod._args[j];

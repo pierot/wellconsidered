@@ -11,8 +11,6 @@ package be.wellconsidered.services.webservice
 		
 		public function WebServiceMethodResponse(param_name:String)
 		{
-			trace("RESPONSE " + param_name);
-			
 			_name = param_name;
 			
 			_pars = new Array();
@@ -20,8 +18,6 @@ package be.wellconsidered.services.webservice
 			
 		public function addPar(param_arg:WebServiceArgument):void
 		{
-			trace("\t\t" + param_arg.name + " - " + param_arg.type);
-			
 			_pars.push(param_arg);
 		}
 	}

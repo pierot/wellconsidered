@@ -22,7 +22,7 @@ package be.wellconsidered.services.webservice
 		
 		public function get type():String
 		{
-			return _type;
+			return _type.split(":")[1];
 		}
 	}
 }

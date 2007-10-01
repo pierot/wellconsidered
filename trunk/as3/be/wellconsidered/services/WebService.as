@@ -13,6 +13,7 @@ package be.wellconsidered.services
 	import flash.events.EventDispatcher;
 	
 	import be.wellconsidered.services.webservice.*;
+	import be.wellconsidered.events.WebServiceEvent;
 	
 	public class WebService extends EventDispatcher
 	{
@@ -65,7 +66,7 @@ package be.wellconsidered.services
 		
 		public function loadMethod(param_method_name:String, ... args):void
 		{
-			var new_call:WebServiceCall = new WebServiceCall(param_method_name, args, method_col.getMethodObject(param_method_name));
+			var new_call:WebServiceCall = new WebServiceCall(param_method_name, method_col.getMethodObject(param_method_name), args);
 			
 			url_request.data = new_call.call;
 			
@@ -74,7 +75,7 @@ package be.wellconsidered.services
 		
 		private function onServiceLoaded(e:Event):void
 		{
-			var response:WebServiceResponse = new WebServiceResponse(new XML(url_loader.data));
+			var response:WebServiceResponse = new WebServiceResponse(new XML(url_loader.data), method_col);
 			
 			dispatchEvent(new WebServiceEvent(WebServiceEvent.COMPLETE, response.data));
 			
