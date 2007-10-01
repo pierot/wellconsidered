@@ -11,7 +11,7 @@
 package be.wellconsidered.tests 
 {
 	import be.wellconsidered.services.WebService;
-	import be.wellconsidered.services.webservice.*;
+	import be.wellconsidered.events.WebServiceEvent;
 	
 	public class WebServiceTest
 	{
@@ -19,7 +19,8 @@ package be.wellconsidered.tests
 		
 		public function WebServiceTest()
 		{
-			ws = new WebService("http://webservices.microsite.be/wigw2/service.asmx?wsdl");
+			ws = new WebService("http://webservices.microsite.be/electrabel_wind/WSFestivalWind.asmx?WSDL");
+			// ws = new WebService("http://webservices.microsite.be/wigw2/service.asmx?wsdl");
 
 			ws.addEventListener(WebServiceEvent.INITED, onWSInit);
 			ws.addEventListener(WebServiceEvent.INITFAILED, onWSInitFailed);			
@@ -32,14 +33,21 @@ package be.wellconsidered.tests
 			ws.addEventListener(WebServiceEvent.COMPLETE, onResult);
 			ws.addEventListener(WebServiceEvent.FAILED, onFault);
 			
-			ws.loadMethod("getVragen", "1", "NL");
+			ws.loadMethod("Init_SessionGuid");
+			// ws.loadMethod("doLogin", "pieter.michels@proximity.bbdo.be", "test", 0);
 		}		
 		
 		private function onResult(e:WebServiceEvent):void
 		{
+			trace(e.data);
 			for(var el:String in e.data)
 			{
 				trace(el + " - " + e.data[el]);
+				
+				for(var el2:String in e.data[el])
+				{
+					trace(el2 + " - " + e.data[el][el2]);
+				}				
 			}
 		}
 

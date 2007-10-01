@@ -19,7 +19,8 @@ package be.wellconsidered.services.webservice
 		
 		public function extract(param_xml:XML):void
 		{
-			trace(param_xml);
+			// trace(param_xml);
+			
 			var types_nms:Namespace = param_xml.namespace("wsdl");
 			
 			var types_xml:XML = param_xml.types_nms::types[0];
@@ -31,9 +32,12 @@ package be.wellconsidered.services.webservice
 			{
 				try
 				{
-					var tmp:XML = i.s_nms::complexType[0].s_nms::sequence[0];
-					var tmp_lst:XMLList = tmp.s_nms::element;
-						
+					var tmp_complex:XML = i.s_nms::complexType[0];
+					
+					// ARGUMENTEN XML
+					var tmp_sequence:XML = tmp_complex.s_nms::sequence.length() > 0 ? tmp_complex.s_nms::sequence[0] : null;
+					var tmp_lst:XMLList = tmp_sequence == null ? new XMLList() : tmp_sequence.s_nms::element;
+				
 					// METHODS
 					if(i.@name.indexOf("Response") <= 0)
 					{
@@ -69,6 +73,16 @@ package be.wellconsidered.services.webservice
 			for(var i:int = 0; i < _methods_arr.length; i++)
 			{
 				if(_methods_arr[i]._name == param_name){ return _methods_arr[i]; break; }
+			}
+			
+			return null;
+		}
+		
+		public function getResponseObject(param_name:String):WebServiceMethodResponse
+		{
+			for(var i:int = 0; i < _response_arr.length; i++)
+			{
+				if(_response_arr[i]._name == param_name){ return _response_arr[i]; break; }
 			}
 			
 			return null;

@@ -2,7 +2,7 @@
 * @author Pieter Michels
 */
 
-package be.wellconsidered.services.webservice
+package be.wellconsidered.events
 {
 	import flash.events.Event;
 	
