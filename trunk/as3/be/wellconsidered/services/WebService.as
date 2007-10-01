@@ -29,7 +29,7 @@ package be.wellconsidered.services
 			// PREPARE METHOD CALLING
 			url_request = new URLRequest(param_ws_url);
 			url_request.method = URLRequestMethod.POST;
-			url_request.requestHeaders.push(new URLRequestHeader("Content-Type", "application/soap+xml"));
+			// url_request.requestHeaders.push(new URLRequestHeader("Content-Type", "application/soap+xml"));
 			
 			url_loader = new URLLoader();
 			url_loader.dataFormat = URLLoaderDataFormat.TEXT;
@@ -66,8 +66,9 @@ package be.wellconsidered.services
 		
 		public function loadMethod(param_method_name:String, ... args):void
 		{
-			var new_call:WebServiceCall = new WebServiceCall(param_method_name, method_col.getMethodObject(param_method_name), args);
+			var new_call:WebServiceCall = new WebServiceCall(param_method_name, method_col.getMethodObject(param_method_name), method_col.targetNameSpace, args);
 			
+			url_request.requestHeaders.push(new URLRequestHeader("Content-Type", "text/xml; charset=utf-8"));
 			url_request.data = new_call.call;
 			
 			url_loader.load(url_request);

@@ -11,29 +11,34 @@ package be.wellconsidered.services.webservice
 		private var _method:String;
 		private var _args:Array;
 		private var _wsmethod:WebServiceMethod;
+		private var _tgtnms:String;
 		
-		public function WebServiceCall(param_method:String, param_wsmethod:WebServiceMethod, ... args)
+		public function WebServiceCall(param_method:String, param_wsmethod:WebServiceMethod, param_tgtnms:String = "http://tempuri.org/", param_arr:Array = null)
 		{
 			_method = param_method;
-			_args = args;
+			_args = param_arr;
 			_wsmethod = param_wsmethod;
+			_tgtnms = param_tgtnms;
 			
 			createSoapCall();
 		}
 	
 		private function createSoapCall():void
 		{
-			var add_node:XML = <{_method} xmlns="http://tempuri.org/" />
-			trace(_wsmethod);
-			for(var j:int = 0; j < _wsmethod._args.length; j++)
+			var add_node:XML = <{_method} xmlns={_tgtnms} />
+			
+			if(_args.length > 0)
 			{
-				var ws_arg:WebServiceArgument = _wsmethod._args[j];
-				
-				add_node.appendChild(
-					<{ws_arg.name}>
-						{_args[j]}
-					</{ws_arg.name}>
-					);
+				for(var j:int = 0; j < _wsmethod._args.length; j++)
+				{
+					var ws_arg:WebServiceArgument = _wsmethod._args[j];
+					
+					add_node.appendChild(
+						<{ws_arg.name}>
+							{_args[j]}
+						</{ws_arg.name}>
+						);
+				}
 			}
 			
 			_call = 
