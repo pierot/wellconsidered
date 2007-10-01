@@ -24,8 +24,10 @@ package be.wellconsidered.services.webservice
 		
 		private function createResponseObject():void
 		{
+			// trace(_resp_xml);
+			
 			var soap_nms:Namespace = new Namespace("http://www.w3.org/2003/05/soap-envelope");
-			var default_nms:Namespace = new Namespace("http://tempuri.org/");
+			var default_nms:Namespace = new Namespace(_method_col.targetNameSpace);
 			
 			var body_resp_xml:XMLList = _resp_xml.soap_nms::Body.children();
 			
@@ -38,44 +40,100 @@ package be.wellconsidered.services.webservice
 			
 			for each(var it:WebServiceArgument in resp_obj._pars)
 			{
-				trace("args : " + it.name + " -" + it.type);
+				// trace("args : " + it.name + " -" + it.type);
 			}
-
+			
 			if(result_xmllst.length() > 1)
 			{
+				trace("-> ARRAY");
+				
 				// HET IS EEN ARRAY VAN ELEMENTEN
 				_data = new Array();
 				
 				for(var i:Number = 0; i < result_xmllst.length(); i++)
 				{
-					_data.push(createResObject(result_xmllst[i].children()));
+					_data.push(createResObject(result_xmllst[i].children(), resp_obj._pars));
 				}
 			}
 			else if(result_xmllst[0].children().length() > 0)
 			{
+				trace("-> 1 OBJECT + PROPS");
+				
 				// 1 ENKEL OBJECT MET MEERDERE PROPERTIES
-				_data = createResObject(result_xmllst[0].children());				
+				_data = createResObject(result_xmllst[0].children(), resp_obj._pars);			
 			}
 			else
 			{
+				trace("-> 1 VALUE");
+				
+				var wsa:WebServiceArgument = resp_obj._pars[0];
+				
 				// 1 ENKEL OBJECT MET 1 ARGUMENT
-				_data = result_xmllst[0].toXMLString();
+				_data = castType(result_xmllst[0].toXMLString(), wsa.type);
 			}
 		}
 		
-		private function createResObject(param_xmllst:XMLList):Object
+		private function createResObject(param_xmllst:XMLList, param_types:Array):Object
 		{
-			var res:Object = new Object();
-			
-			for each(var el:XML in param_xmllst)
+			if(param_xmllst.length() > 1)
 			{
-				res[el.localName()] = el.toString();
+				// EEN VOLLEDIG OBJECT
+				var res:Object = new Object();
 				
-				// trace(el.localName() + " -> " + _data[el.localName()] + " (" + (typeof _data[el.localName()]) + ")");
-			}	
-			
-			return res;
+				for(var i:int = 0; i < param_xmllst.length(); i++)
+				{
+					var el:XML = param_xmllst[i];
+					
+					res[el.localName()] = el.toString();
+				}
+				
+				return res;
+			}
+			else
+			{
+				var type:String = param_types[0].type;
+				var res_single:*;
+				
+				switch(type)
+				{
+					case "ArrayOfString":
+					
+						res_single = new String(param_xmllst[0]);
+						
+						break;
+						
+					default:
+					
+						res_single = param_xmllst[0];
+				}
+				
+				return res_single;
+			}
 		}
+		
+		private function castType(param_o:Object, param_t:String):*
+		{
+			switch(param_t.toLowerCase())
+			{
+				case "int":
+				
+					return param_o as int;
+						
+					break;
+					
+				case "float":
+				case "double":
+				
+					return param_o as Number;
+						
+					break;					
+				
+				case "string":
+				default:
+				
+					return param_o;
+			}
+		}		
 	
 		public function get data():Object
 		{

@@ -10,6 +10,7 @@ package be.wellconsidered.services.webservice
 	{
 		private var _methods_arr:Array;
 		private var _response_arr:Array;
+		private var _tgtnms:String;
 		
 		public function WebServiceMethodCollection()
 		{
@@ -22,6 +23,13 @@ package be.wellconsidered.services.webservice
 			// trace(param_xml);
 			
 			var types_nms:Namespace = param_xml.namespace("wsdl");
+			
+			try
+			{
+				_tgtnms = param_xml.@targetNamespace;
+			}
+			catch(e:Error)
+			{/* trace(e.message); */}
 			
 			var types_xml:XML = param_xml.types_nms::types[0];
 			var s_nms:Namespace = types_xml.namespace("s");
@@ -87,5 +95,10 @@ package be.wellconsidered.services.webservice
 			
 			return null;
 		}		
+		
+		public function get targetNameSpace():String
+		{
+			return _tgtnms;
+		}
 	}
 }
