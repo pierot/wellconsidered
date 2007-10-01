@@ -48,6 +48,14 @@ package be.wellconsidered.tests
 			for(var el:String in e.data)
 			{
 				tracing(el + "  -  " + e.data[el]); 
+				
+				if(typeof(e.data[el]) == "object")
+				{
+					for(var el2:String in e.data[el])
+					{
+						tracing("\t" + el2 + "  -  " + e.data[el][el2]); 
+					}					
+				}
 			}
 		}
 
