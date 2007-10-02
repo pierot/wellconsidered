@@ -49,6 +49,7 @@ package be.wellconsidered.services
 			
 			// url_request.requestHeaders.push(new URLRequestHeader("Content-Type", "application/soap+xml"));
 			url_request.requestHeaders.push(new URLRequestHeader("Content-Type", "text/xml; charset=utf-8"));
+			url_request.requestHeaders.push(new URLRequestHeader("SOAPAction", ws.getMethodCollection().targetNameSpace + "/" + method_name));
 			url_request.data = new_call.call;
 			
 			url_loader.load(url_request);
