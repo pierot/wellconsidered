@@ -2,21 +2,21 @@
 * @author Pieter Michels
 */
 
-package be.wellconsidered.services.webservice
+package be.wellconsidered.services.webservice.types
 {
-	public class WebServiceMethodResponse
+	public class WebServiceComplexType
 	{
 		public var _name:String;
 		public var _pars:Array;
 		
-		public function WebServiceMethodResponse(param_name:String)
+		public function WebServiceComplexType(param_name:String)
 		{
 			_name = param_name;
 			
 			_pars = new Array();
 		}
 			
-		public function addPar(param_arg:WebServiceArgument):void
+		public function addProp(param_arg:WebServiceArgument):void
 		{
 			_pars.push(param_arg);
 		}

@@ -4,6 +4,8 @@
 
 package be.wellconsidered.services.webservice
 {
+	import be.wellconsidered.services.webservice.types.*;
+	
 	public class WebServiceResponse
 	{
 		private var _resp_xml:XML;
@@ -38,10 +40,12 @@ package be.wellconsidered.services.webservice
 			
 			var resp_obj:WebServiceMethodResponse = _method_col.getResponseObject(_response_name);
 			
+			/*
 			for each(var it:WebServiceArgument in resp_obj._pars)
 			{
-				// trace("args : " + it.name + " -" + it.type);
+				 trace("args : " + it.name + " -" + it.type + " -" + it.isReference());
 			}
+			*/
 			
 			if(result_xmllst.length() > 1)
 			{
@@ -50,64 +54,66 @@ package be.wellconsidered.services.webservice
 				// ARRAY
 				_data = new Array();
 				
+				var par_arr:Array = resp_obj._pars;
+				
+				if(par_arr.length == 1 && par_arr[0].isReference())
+				{
+					par_arr = _method_col.getComplexObject(par_arr[0].type)._pars;
+				}
+				
 				for(var i:Number = 0; i < result_xmllst.length(); i++)
 				{
-					_data.push(createResObject(result_xmllst[i].children(), resp_obj._pars));
+					_data.push(createResObject(result_xmllst[i].children(), par_arr));
 				}
 			}
 			else if(result_xmllst[0].children().length() > 0)
 			{
 				trace("-> 1 OBJECT + PROPS");
 				
+				var wsa_single:WebServiceArgument = resp_obj._pars[0];
+				var obj_single_args:Array = resp_obj._pars;
+				
+				if(wsa_single.isReference())
+				{	
+					obj_single_args = _method_col.getComplexObject(wsa_single.type)._pars;
+					
+					if(obj_single_args.length == 1 && obj_single_args[0].isReference())
+					{
+						obj_single_args = _method_col.getComplexObject(obj_single_args[0].type)._pars;
+					}
+				}
+				
 				// 1 OBJECT AND MULTIPLE PROPERTIES
-				_data = createResObject(result_xmllst[0].children(), resp_obj._pars);			
+				_data = createResObject(result_xmllst[0].children(), obj_single_args);			
 			}
 			else
 			{
-				trace("-> 1 VALUE");
-				
-				var wsa:WebServiceArgument = resp_obj._pars[0];
+				// trace("-> 1 VALUE");
 				
 				// 1 OBJECT AND 1 ARGUMENT
-				_data = castType(result_xmllst[0].toXMLString(), wsa.type);
+				_data = castType(result_xmllst[0].toXMLString(), resp_obj._pars[0].type);
 			}
 		}
 		
-		private function createResObject(param_xmllst:XMLList, param_types:Array):Object
+		private function createResObject(param_xmllst:XMLList, param_wsa:*):Object
 		{
 			if(param_xmllst.length() > 1)
 			{
-				// FULL OBJECT
 				var res:Object = new Object();
 				
 				for(var i:int = 0; i < param_xmllst.length(); i++)
 				{
 					var el:XML = param_xmllst[i];
+					var wsa:WebServiceArgument = _method_col.getComplexObjectArgument(param_wsa, el.localName()); // LOOKUP
 					
-					res[el.localName()] = el.toString();
+					res[el.localName()] = castType(el[0], wsa.type);
 				}
 				
 				return res;
 			}
 			else
-			{
-				var type:String = param_types[0].type;
-				var res_single:*;
-				
-				switch(type)
-				{
-					case "ArrayOfString":
-					
-						res_single = new String(param_xmllst[0]);
-						
-						break;
-						
-					default:
-					
-						res_single = param_xmllst[0];
-				}
-				
-				return res_single;
+			{				
+				return castType(param_xmllst[0], param_wsa[0].type);
 			}
 		}
 		
@@ -116,22 +122,22 @@ package be.wellconsidered.services.webservice
 			switch(param_t.toLowerCase())
 			{
 				case "int":
-				
-					return param_o as int;
+					
+					return int(param_o);
 						
 					break;
 					
 				case "float":
 				case "double":
 				
-					return param_o as Number;
+					return Number(param_o);
 						
 					break;					
 				
 				case "string":
 				default:
 				
-					return param_o;
+					return String(param_o);
 			}
 		}		
 	
