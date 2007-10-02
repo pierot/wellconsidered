@@ -46,6 +46,8 @@ package be.wellconsidered.services.webservice
 			}
 			else
 			{
+				
+				/*
 				for(var k:String in _args[0])
 				{
 					var ws_lookup_arg:WebServiceArgument = _method_col.getMethodObjectArgument(_wsmethod._args, k);
@@ -55,7 +57,28 @@ package be.wellconsidered.services.webservice
 							{_args[0][ws_lookup_arg.name]}
 						</{ws_lookup_arg.name}>
 						);
-				}				
+				}
+				*/
+				
+				for(var i:int = 0; i < _wsmethod._args.length; i++)
+				{
+					var wsa_arg:WebServiceArgument = _wsmethod._args[i];
+					
+					if(!_args[0][wsa_arg.name])
+					{
+						add_node.appendChild(
+							<{wsa_arg.name} />
+							);								
+					}
+					else
+					{
+						add_node.appendChild(
+							<{wsa_arg.name}>
+								{_args[0][wsa_arg.name]}
+							</{wsa_arg.name}>
+							);
+					}
+				}	
 			}
 			
 			_call = 
