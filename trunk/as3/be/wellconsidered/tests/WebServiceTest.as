@@ -11,7 +11,9 @@
 package be.wellconsidered.tests 
 {
 	import be.wellconsidered.services.WebService;
-	import be.wellconsidered.events.WebServiceEvent;
+	import be.wellconsidered.services.Operation;
+	import be.wellconsidered.events.OperationEvent;
+	
 	import flash.text.TextField;
 	
 	public class WebServiceTest
@@ -21,27 +23,30 @@ package be.wellconsidered.tests
 		
 		public function WebServiceTest()
 		{
+			tracing("START TEST");
+			
 			ws = new WebService("http://webservices.microsite.be/mora/ws_mora.asmx?wsdl");
 			// ws = new WebService("http://webservices.microsite.be/electrabel_wind/WSFestivalWind.asmx?WSDL");
 			// ws = new WebService("http://webservices.microsite.be/wigw2/service.asmx?wsdl");
 
-			ws.addEventListener(WebServiceEvent.INITED, onWSInit);
-			ws.addEventListener(WebServiceEvent.INITFAILED, onWSInitFailed);			
+			init();
 		}
-		
-		private function onWSInitFailed(e:WebServiceEvent):void { tracing(e.data); }	
-		
-		private function onWSInit(e:WebServiceEvent):void
+
+		private function init():void
 		{
-			ws.addEventListener(WebServiceEvent.COMPLETE, onResult);
-			ws.addEventListener(WebServiceEvent.FAILED, onFault);
+			tracing("INIT");
 			
-			ws.loadMethod("getWinners");
-			// ws.loadMethod("IsRegisteredFestival", "00000000-0000-0000-0000-000000000000");
-			// ws.loadMethod("doLogin", "pieter.michels@proximity.bbdo.be", "test", 0);
+			var o:Operation = new Operation(ws);
+			
+			o.addEventListener(OperationEvent.COMPLETE, onResult);
+			o.addEventListener(OperationEvent.FAILED, onFault);
+			
+			o.getWinners();
+			// ws.IsRegisteredFestival("00000000-0000-0000-0000-000000000000");
+			// ws.doLogin("pieter.michels@proximity.bbdo.be", "test", 0);
 		}		
 		
-		private function onResult(e:WebServiceEvent):void
+		private function onResult(e:OperationEvent):void
 		{
 			tracing(e.data);
 			
@@ -59,7 +64,7 @@ package be.wellconsidered.tests
 			}
 		}
 
-		private function onFault(e:WebServiceEvent):void { tracing(e.data); }		
+		private function onFault(e:OperationEvent):void { tracing(e.data); }		
 		
 		public function addTracer(param_txt:TextField):void
 		{

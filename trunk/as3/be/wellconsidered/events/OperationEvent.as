@@ -6,14 +6,14 @@ package be.wellconsidered.events
 {
 	import flash.events.Event;
 	
-	public class WebServiceEvent extends Event
+	public class OperationEvent extends Event
 	{	
-		public static var INITFAILED:String = "initfailed";
-		public static var INITED:String = "inited";
+		public static var COMPLETE:String = "complete";
+		public static var FAILED:String = "failed";
 		
 		private var _data:Object;
 		
-		function WebServiceEvent(param_event:String, param_data:Object = null)
+		function OperationEvent(param_event:String, param_data:Object = null)
 		{
 			super(param_event);
 			
