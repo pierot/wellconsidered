@@ -94,7 +94,17 @@ package be.wellconsidered.services.webservice
 			}
 			
 			return null;
-		}		
+		}
+		
+		public function methodExists(param_name:String):Boolean
+		{
+			for(var i:int = 0; i < _methods_arr.length; i++)
+			{
+				if(_methods_arr[i]._name == param_name){ return true; break; }
+			}
+			
+			return false;			
+		}
 		
 		public function get targetNameSpace():String
 		{

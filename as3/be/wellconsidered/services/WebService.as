@@ -5,42 +5,35 @@
 package be.wellconsidered.services
 {
 	import flash.net.*;
-	import flash.xml.XMLDocument;
+	
     import flash.events.Event;
 	import flash.events.ErrorEvent;
-	import flash.errors.IOError;
-	import flash.events.HTTPStatusEvent;
 	import flash.events.EventDispatcher;
+	
+	import flash.errors.IOError;
 	
 	import be.wellconsidered.services.webservice.*;
 	import be.wellconsidered.events.WebServiceEvent;
 	
-	public class WebService extends EventDispatcher
+	dynamic public class WebService extends EventDispatcher
 	{
-		private var url_loader:URLLoader;
-		private var url_request:URLRequest;
-		
+		private var url_ws:String;
 		private var urllserv_desc:URLLoader;
 		
-		private var method_col:WebServiceMethodCollection;
+		private var descr_loaded:Boolean = false;
+		private var qeue_arr:Array;
+		
+		public var method_col:WebServiceMethodCollection;
 		
 		public function WebService(param_ws_url:String)
 		{
-			// PREPARE METHOD CALLING
-			url_request = new URLRequest(param_ws_url);
-			url_request.method = URLRequestMethod.POST;
-			// url_request.requestHeaders.push(new URLRequestHeader("Content-Type", "application/soap+xml"));
+			qeue_arr = new Array();
+			url_ws = param_ws_url;
 			
-			url_loader = new URLLoader();
-			url_loader.dataFormat = URLLoaderDataFormat.TEXT;
-			url_loader.addEventListener("complete", onServiceLoaded);
-			url_loader.addEventListener("ioError", onServiceFailed);
-			
-			// LOAD WS DESCRIPTION
-			loadWSDescr(param_ws_url);
+			loadWSDescr();
 		}
 		
-		private function loadWSDescr(param_ws_url:String):void
+		private function loadWSDescr():void
 		{
 			urllserv_desc = new URLLoader();
 			
@@ -48,7 +41,7 @@ package be.wellconsidered.services
 			urllserv_desc.addEventListener("complete", onDescrLoaded);
 			urllserv_desc.addEventListener("ioError", onDescrFailed);		
 			
-			urllserv_desc.load(new URLRequest(param_ws_url));		
+			urllserv_desc.load(new URLRequest(url_ws));		
 		}
 		
 		private function onDescrLoaded(e:Event):void
@@ -56,36 +49,65 @@ package be.wellconsidered.services
 			method_col = new WebServiceMethodCollection();
 			method_col.extract(new XML(urllserv_desc.data));
 			
+			loaded = true;
+			
+			executeQeuedOperations();
+			
+			trace("DESCRIPTION LOADED!");
+			
 			dispatchEvent(new WebServiceEvent(WebServiceEvent.INITED));
 		}	
 		
 		private function onDescrFailed(e:ErrorEvent):void
 		{
+			trace("DESCRIPTION COULD NOT BE LOADED!");
+			
 			dispatchEvent(new WebServiceEvent(WebServiceEvent.INITFAILED, e));
-		}		
+		}	
 		
-		public function loadMethod(param_method_name:String, ... args):void
+		private function executeQeuedOperations():void
 		{
-			var new_call:WebServiceCall = new WebServiceCall(param_method_name, method_col.getMethodObject(param_method_name), method_col.targetNameSpace, args);
+			// trace("EXECUTE QEUED OPS (" + qeue_arr.length + ")");
 			
-			url_request.requestHeaders.push(new URLRequestHeader("Content-Type", "text/xml; charset=utf-8"));
-			url_request.data = new_call.call;
-			
-			url_loader.load(url_request);
+			if(qeue_arr.length > 0)
+			{
+				for(var i:int = 0; i < qeue_arr.length; i++)
+				{
+					if(method_col.methodExists(qeue_arr[i].method))
+					{
+						qeue_arr[i].loadMethod();
+					}
+					
+					qeue_arr.splice(i, 1);
+				}
+			}
 		}
 		
-		private function onServiceLoaded(e:Event):void
+		public function addOperationToQeue(param_o:Operation):void
 		{
-			var response:WebServiceResponse = new WebServiceResponse(new XML(url_loader.data), method_col);
+			// trace("ADD OPERATION TO QEUE");
 			
-			dispatchEvent(new WebServiceEvent(WebServiceEvent.COMPLETE, response.data));
-			
-			url_loader.data = null;
+			qeue_arr.push(param_o);
 		}
 		
-		private function onServiceFailed(e:ErrorEvent):void
+		public function getMethodCollection():WebServiceMethodCollection
 		{
-			dispatchEvent(new WebServiceEvent(WebServiceEvent.FAILED, e));
+			return method_col;
+		}
+		
+		private function set loaded(param_t:Boolean):void
+		{
+			descr_loaded = param_t;
+		}
+		
+		public function get loaded():Boolean
+		{
+			return descr_loaded;
+		}
+		
+		public function get url():String
+		{
+			return url_ws;
 		}
 	}
 }
