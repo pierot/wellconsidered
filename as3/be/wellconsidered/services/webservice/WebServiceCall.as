@@ -4,6 +4,8 @@
 
 package be.wellconsidered.services.webservice 
 {
+	import be.wellconsidered.services.webservice.types.*;
+	
 	public class WebServiceCall
 	{
 		private var _call:XML;
@@ -11,13 +13,15 @@ package be.wellconsidered.services.webservice
 		private var _method:String;
 		private var _args:Array;
 		private var _wsmethod:WebServiceMethod;
+		private var _method_col:WebServiceMethodCollection;
 		private var _tgtnms:String;
 		
-		public function WebServiceCall(param_method:String, param_wsmethod:WebServiceMethod, param_tgtnms:String = "http://tempuri.org/", param_arr:Array = null)
+		public function WebServiceCall(param_method:String, param_wsmethodcol:WebServiceMethodCollection, param_tgtnms:String = "http://tempuri.org/", param_arr:Array = null)
 		{
+			_method_col = param_wsmethodcol;
 			_method = param_method;
 			_args = param_arr;
-			_wsmethod = param_wsmethod;
+			_wsmethod = _method_col.getMethodObject(_method);
 			_tgtnms = param_tgtnms;
 			
 			createSoapCall();
@@ -27,7 +31,7 @@ package be.wellconsidered.services.webservice
 		{
 			var add_node:XML = <{_method} xmlns={_tgtnms} />
 			
-			if(_args.length > 0)
+			if(_args.length > 1 || typeof(_args[0]) != "object")
 			{
 				for(var j:int = 0; j < _wsmethod._args.length; j++)
 				{
@@ -40,6 +44,19 @@ package be.wellconsidered.services.webservice
 						);
 				}
 			}
+			else
+			{
+				for(var k:String in _args[0])
+				{
+					var ws_lookup_arg:WebServiceArgument = _method_col.getMethodObjectArgument(_wsmethod._args, k);
+					
+					add_node.appendChild(
+						<{ws_lookup_arg.name}>
+							{_args[0][ws_lookup_arg.name]}
+						</{ws_lookup_arg.name}>
+						);
+				}				
+			}
 			
 			_call = 
 				<soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope">
@@ -48,6 +65,8 @@ package be.wellconsidered.services.webservice
 					</soap12:Body>
 				</soap12:Envelope>
 				;
+				
+			trace(_call);
 		}
 		
 		public function get call():XML

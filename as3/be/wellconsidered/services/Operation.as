@@ -45,7 +45,7 @@ package be.wellconsidered.services
 		
 		public function loadMethod():void
 		{
-			var new_call:WebServiceCall = new WebServiceCall(method_name, ws.getMethodCollection().getMethodObject(method_name), ws.getMethodCollection().targetNameSpace, method_args);
+			var new_call:WebServiceCall = new WebServiceCall(method_name, ws.getMethodCollection(), ws.getMethodCollection().targetNameSpace, method_args);
 			
 			// url_request.requestHeaders.push(new URLRequestHeader("Content-Type", "application/soap+xml"));
 			url_request.requestHeaders.push(new URLRequestHeader("Content-Type", "text/xml; charset=utf-8"));
@@ -64,7 +64,7 @@ package be.wellconsidered.services
 		}
 		
 		private function onServiceFailed(e:ErrorEvent):void
-		{
+		{	
 			dispatchEvent(new OperationEvent(OperationEvent.FAILED, e));
 		}	
 		

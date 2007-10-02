@@ -8,11 +8,13 @@ package be.wellconsidered.services
 	
     import flash.events.Event;
 	import flash.events.ErrorEvent;
+	import flash.events.IOErrorEvent;
 	import flash.events.EventDispatcher;
-	
-	import flash.errors.IOError;
+	import flash.events.SecurityErrorEvent;
 	
 	import be.wellconsidered.services.webservice.*;
+	
+	import be.wellconsidered.events.WebServiceMethodCollectionEvent
 	import be.wellconsidered.events.WebServiceEvent;
 	
 	dynamic public class WebService extends EventDispatcher
@@ -38,8 +40,9 @@ package be.wellconsidered.services
 			urllserv_desc = new URLLoader();
 			
 			urllserv_desc.dataFormat = URLLoaderDataFormat.TEXT;
-			urllserv_desc.addEventListener("complete", onDescrLoaded);
-			urllserv_desc.addEventListener("ioError", onDescrFailed);		
+			urllserv_desc.addEventListener(Event.COMPLETE, onDescrLoaded);
+			urllserv_desc.addEventListener(IOErrorEvent.IO_ERROR, onDescrFailed);	
+			urllserv_desc.addEventListener(SecurityErrorEvent.SECURITY_ERROR, onSecurityError);
 			
 			urllserv_desc.load(new URLRequest(url_ws));		
 		}
@@ -47,23 +50,37 @@ package be.wellconsidered.services
 		private function onDescrLoaded(e:Event):void
 		{
 			method_col = new WebServiceMethodCollection();
-			method_col.extract(new XML(urllserv_desc.data));
 			
-			loaded = true;
+			method_col.addEventListener(WebServiceMethodCollectionEvent.COMPLETE, onDescrExtractComplete);
+			method_col.extract(new XML(urllserv_desc.data));
+		}
+		
+		private function onDescrExtractComplete(e:WebServiceMethodCollectionEvent):void
+		{
+			descr_loaded = true;
 			
 			executeQeuedOperations();
 			
-			trace("DESCRIPTION LOADED!");
+			// trace("DESCRIPTION LOADED!");
 			
 			dispatchEvent(new WebServiceEvent(WebServiceEvent.INITED));
 		}	
 		
-		private function onDescrFailed(e:ErrorEvent):void
+		private function onDescrFailed(e:IOErrorEvent):void
 		{
-			trace("DESCRIPTION COULD NOT BE LOADED!");
+			// throw(new Error("WSDL file could not be loaded (" + url_ws + ")"));
 			
 			dispatchEvent(new WebServiceEvent(WebServiceEvent.INITFAILED, e));
 		}	
+		
+		private function onSecurityError(e:SecurityErrorEvent):void
+		{
+			// trace("WS ERROR :" + e);
+			
+			// throw(new Error("WSDL file security error (" + url_ws + ")"));
+			
+			dispatchEvent(new WebServiceEvent(WebServiceEvent.INITFAILED, e));
+		}		
 		
 		private function executeQeuedOperations():void
 		{
@@ -93,11 +110,6 @@ package be.wellconsidered.services
 		public function getMethodCollection():WebServiceMethodCollection
 		{
 			return method_col;
-		}
-		
-		private function set loaded(param_t:Boolean):void
-		{
-			descr_loaded = param_t;
 		}
 		
 		public function get loaded():Boolean
