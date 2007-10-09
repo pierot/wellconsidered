@@ -29,5 +29,10 @@ package be.wellconsidered.services.webservice.types
 		{
 			return _type.split(":")[0] == "tns";
 		}
+		
+		public function isArray():Boolean
+		{
+			return isReference() && _type.split(":")[1].indexOf("Array") == 0;
+		}		
 	}
 }

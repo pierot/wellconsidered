@@ -28,7 +28,7 @@ package be.wellconsidered.services.webservice
 		{
 			// trace(_resp_xml);
 			
-			var soap_nms:Namespace = new Namespace("http://www.w3.org/2003/05/soap-envelope");
+			var soap_nms:Namespace = new Namespace("http://schemas.xmlsoap.org/soap/envelope/");
 			var default_nms:Namespace = new Namespace(_method_col.targetNameSpace);
 			
 			var body_resp_xml:XMLList = _resp_xml.soap_nms::Body.children();
@@ -37,83 +37,92 @@ package be.wellconsidered.services.webservice
 			_method_name = _response_name.split("Response")[0];
 			
 			var result_xmllst:XMLList = body_resp_xml.default_nms::[_method_name + "Result"].children();
-			
+		
 			var resp_obj:WebServiceMethodResponse = _method_col.getResponseObject(_response_name);
-			
-			/*
-			for each(var it:WebServiceArgument in resp_obj._pars)
+	
+			_data = parseXMLList(result_xmllst, resp_obj);
+		}
+		
+		private function parseXMLList(result_xmllst:XMLList, resp_obj:*):*
+		{	
+			if(resp_obj._pars.length == 1)
 			{
-				 trace("args : " + it.name + " -" + it.type + " -" + it.isReference());
-			}
-			*/
-			
-			if(result_xmllst.length() > 1)
-			{
-				trace("-> ARRAY");
+				var resp_wsa:WebServiceArgument = resp_obj._pars[0];
 				
-				// ARRAY
-				_data = new Array();
-				
-				var par_arr:Array = resp_obj._pars;
-				
-				if(par_arr.length == 1 && par_arr[0].isReference())
+				// OR 1 ITEM OR REFERENCE
+				if(resp_wsa.isReference())
 				{
-					par_arr = _method_col.getComplexObject(par_arr[0].type)._pars;
-				}
-				
-				for(var i:Number = 0; i < result_xmllst.length(); i++)
-				{
-					_data.push(createResObject(result_xmllst[i].children(), par_arr));
-				}
-			}
-			else if(result_xmllst[0].children().length() > 0)
-			{
-				trace("-> 1 OBJECT + PROPS");
-				
-				var wsa_single:WebServiceArgument = resp_obj._pars[0];
-				var obj_single_args:Array = resp_obj._pars;
-				
-				if(wsa_single.isReference())
-				{	
-					obj_single_args = _method_col.getComplexObject(wsa_single.type)._pars;
-					
-					if(obj_single_args.length == 1 && obj_single_args[0].isReference())
+					// TNS
+					if(resp_wsa.isArray())
 					{
-						obj_single_args = _method_col.getComplexObject(obj_single_args[0].type)._pars;
+						// ARRAY OF TNS OBJECT
+						resp_obj = _method_col.getComplexObject(resp_wsa.type);
+						
+						return parseXMLList(result_xmllst, resp_obj);
+					}
+					else
+					{
+						resp_obj = _method_col.getComplexObject(resp_wsa.type);
+						
+						// return parseXMLList(result_xmllst, resp_obj);
+						
+						var tmp:Array = new Array();
+						
+						for(var i:int = 0; i < resp_obj._pars.length; i++)
+						{
+							tmp.push(parseXMLList(result_xmllst[i].children(), resp_obj));
+						}
+						
+						return tmp;
+					}
+				}
+				else
+				{
+					// 1 ITEM
+					return castType(result_xmllst[0].toXMLString(), resp_wsa.type);
+				}
+			}
+			else
+			{
+				var obj:Object = new Object();
+
+				// MEERDERE PROPS
+				for(var j:int = 0; j < result_xmllst.length(); j++)
+				{
+					if(result_xmllst[j].children().length() > 1)
+					{
+						obj[tmp_wsa.name] = parseXMLList(result_xmllst[j].children(), resp_obj);				
+					}
+					else
+					{
+						var tmp_wsa:WebServiceArgument = _method_col.getComplexObjectArgument(resp_obj._pars, result_xmllst[j].localName());
+					
+						if(tmp_wsa.isReference())
+						{
+							resp_obj = _method_col.getComplexObject(tmp_wsa.type);
+							
+							obj[tmp_wsa.name] = parseXMLList(result_xmllst[j].children(), resp_obj);			
+						}
+						else
+						{
+							obj[tmp_wsa.name] = castType(result_xmllst[j], tmp_wsa.type);
+						}
 					}
 				}
 				
-				// 1 OBJECT AND MULTIPLE PROPERTIES
-				_data = createResObject(result_xmllst[0].children(), obj_single_args);			
-			}
-			else
-			{
-				// trace("-> 1 VALUE");
-				
-				// 1 OBJECT AND 1 ARGUMENT
-				_data = castType(result_xmllst[0].toXMLString(), resp_obj._pars[0].type);
+				return obj;
 			}
 		}
 		
-		private function createResObject(param_xmllst:XMLList, param_wsa:*):Object
+		private function createResObject(param_xmllst:XMLList, param_wsa:WebServiceArgument):Object
 		{
-			if(param_xmllst.length() > 1)
+			if(param_wsa.isReference())
 			{
-				var res:Object = new Object();
-				
-				for(var i:int = 0; i < param_xmllst.length(); i++)
-				{
-					var el:XML = param_xmllst[i];
-					var wsa:WebServiceArgument = _method_col.getComplexObjectArgument(param_wsa, el.localName()); // LOOKUP
-					
-					res[el.localName()] = castType(el[0], wsa.type);
-				}
-				
-				return res;
+				return parseXMLList(param_xmllst, _method_col.getComplexObject(param_wsa.type));	
 			}
 			else
-			{				
-				return castType(param_xmllst[0], param_wsa[0].type);
+			{
+				return castType(param_xmllst[0], param_wsa.type);
 			}
 		}
 		

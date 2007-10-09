@@ -46,10 +46,21 @@ package be.wellconsidered.services
 		public function loadMethod():void
 		{
 			var new_call:WebServiceCall = new WebServiceCall(method_name, ws.getMethodCollection(), ws.getMethodCollection().targetNameSpace, method_args);
+			var soap_action:String = ws.getMethodCollection().targetNameSpace;
+			var trailing_slash:Number = soap_action.lastIndexOf("/");
+			
+			if(trailing_slash == -1 || trailing_slash < soap_action.length - 2)
+			{
+				soap_action += "/" + method_name;
+			}
+			else
+			{
+				soap_action += method_name;
+			}
 			
 			// url_request.requestHeaders.push(new URLRequestHeader("Content-Type", "application/soap+xml"));
 			url_request.requestHeaders.push(new URLRequestHeader("Content-Type", "text/xml; charset=utf-8"));
-			url_request.requestHeaders.push(new URLRequestHeader("SOAPAction", ws.getMethodCollection().targetNameSpace + "/" + method_name));
+			url_request.requestHeaders.push(new URLRequestHeader("SOAPAction", soap_action));
 			url_request.data = new_call.call;
 			
 			url_loader.load(url_request);
