@@ -151,6 +151,7 @@ package be.wellconsidered.services.webservice
 						
 					break;
 					
+				case "decimal":
 				case "float":
 				case "double":
 				
