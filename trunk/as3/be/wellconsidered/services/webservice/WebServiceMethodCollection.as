@@ -147,6 +147,7 @@ package be.wellconsidered.services.webservice
 		
 		public function getComplexObject(param_name:String):WebServiceComplexType
 		{
+			trace("getComplexObject : " + param_name);
 			for(var i:int = 0; i < _complex_arr.length; i++)
 			{
 				if(_complex_arr[i]._name == param_name){ return _complex_arr[i]; break; }
