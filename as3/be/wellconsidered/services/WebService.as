@@ -100,6 +100,12 @@ package be.wellconsidered.services
 			}
 		}
 		
+		/**
+		* Add Operation object to Webservice qeue. 
+		* 
+		* @param	Operation instance
+		* @return
+		*/
 		public function addOperationToQeue(param_o:Operation):void
 		{
 			// trace("ADD OPERATION TO QEUE");
@@ -107,16 +113,31 @@ package be.wellconsidered.services
 			qeue_arr.push(param_o);
 		}
 		
+		/**
+		* Get collection of available Webservice methods.
+		* 
+		* @return	WebServiceMethodCollection instance
+		*/
 		public function getMethodCollection():WebServiceMethodCollection
 		{
 			return method_col;
 		}
 		
+		/**
+		* Is description file loaded.
+		* 
+		* @return	true if loaded
+		*/
 		public function get loaded():Boolean
 		{
 			return descr_loaded;
 		}
 		
+		/**
+		* Get Webservice URL
+		* 
+		* @return	String
+		*/
 		public function get url():String
 		{
 			return url_ws;

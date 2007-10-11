@@ -25,6 +25,11 @@ package be.wellconsidered.services.webservice
 			_complex_arr = new Array();
 		}
 		
+		/**
+		* Extract data from resulting XML
+		* 
+		* @param	XML object
+		*/
 		public function extract(param_xml:XML):void
 		{
 			// trace(param_xml);
@@ -115,6 +120,13 @@ package be.wellconsidered.services.webservice
 			}			
 		}		
 		
+		/**
+		* Get Method object
+		* 
+		* @param	Name of object
+		* 
+		* @return	WebServiceMethod
+		*/		
 		public function getMethodObject(param_name:String):WebServiceMethod
 		{
 			for(var i:int = 0; i < _methods_arr.length; i++)
@@ -124,7 +136,15 @@ package be.wellconsidered.services.webservice
 			
 			return null;
 		}
-		
+
+		/**
+		* Get WebServiceArgument from a MethodObject
+		* 
+		* @param	Array of WebServiceArguments
+		* @param	Argument name
+		* 
+		* @return	WebServiceArgument or null
+		*/
 		public function getMethodObjectArgument(param_a:Array, param_name:String):WebServiceArgument
 		{
 			for(var i:int = 0; i < param_a.length; i++)
@@ -135,6 +155,13 @@ package be.wellconsidered.services.webservice
 			return null;
 		}		
 		
+		/**
+		* Get Response object
+		* 
+		* @param	Name of object
+		* 
+		* @return	WebServiceMethodResponse
+		*/		
 		public function getResponseObject(param_name:String):WebServiceMethodResponse
 		{
 			for(var i:int = 0; i < _response_arr.length; i++)
@@ -145,9 +172,15 @@ package be.wellconsidered.services.webservice
 			return null;
 		}
 		
+		/**
+		* Get Complex object
+		* 
+		* @param	Name of object
+		* 
+		* @return	WebServiceComplexType
+		*/
 		public function getComplexObject(param_name:String):WebServiceComplexType
 		{
-			trace("getComplexObject : " + param_name);
 			for(var i:int = 0; i < _complex_arr.length; i++)
 			{
 				if(_complex_arr[i]._name == param_name){ return _complex_arr[i]; break; }
@@ -156,6 +189,14 @@ package be.wellconsidered.services.webservice
 			return null;
 		}	
 		
+		/**
+		* Get WebServiceArgument from a ComplexObject
+		* 
+		* @param	Array of WebServiceArguments
+		* @param	Argument name
+		* 
+		* @return	WebServiceArgument or null
+		*/
 		public function getComplexObjectArgument(param_a:Array, param_name:String):WebServiceArgument
 		{
 			for(var i:int = 0; i < param_a.length; i++)
@@ -166,6 +207,13 @@ package be.wellconsidered.services.webservice
 			return null;
 		}		
 		
+		/**
+		* Check if method exists
+		* 
+		* @param	Method name
+		* 
+		* @return	True if method exists
+		*/
 		public function methodExists(param_name:String):Boolean
 		{
 			for(var i:int = 0; i < _methods_arr.length; i++)
@@ -176,6 +224,11 @@ package be.wellconsidered.services.webservice
 			return false;			
 		}
 		
+		/**
+		* Get target namespace
+		* 
+		* @return	Namespace as a String
+		*/
 		public function get targetNameSpace():String
 		{
 			return _tgtnms;

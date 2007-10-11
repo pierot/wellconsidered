@@ -45,21 +45,7 @@ package be.wellconsidered.services.webservice
 				}
 			}
 			else
-			{
-				
-				/*
-				for(var k:String in _args[0])
-				{
-					var ws_lookup_arg:WebServiceArgument = _method_col.getMethodObjectArgument(_wsmethod._args, k);
-					
-					add_node.appendChild(
-						<{ws_lookup_arg.name}>
-							{_args[0][ws_lookup_arg.name]}
-						</{ws_lookup_arg.name}>
-						);
-				}
-				*/
-				
+			{			
 				for(var i:int = 0; i < _wsmethod._args.length; i++)
 				{
 					var wsa_arg:WebServiceArgument = _wsmethod._args[i];
@@ -92,6 +78,11 @@ package be.wellconsidered.services.webservice
 			trace(_call);
 		}
 		
+		/**
+		* Get call
+		* 
+		* @return	XML object of created call.
+		*/
 		public function get call():XML
 		{
 			return _call;
