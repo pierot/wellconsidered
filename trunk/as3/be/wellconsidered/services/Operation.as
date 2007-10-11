@@ -43,7 +43,7 @@ package be.wellconsidered.services
 			url_loader.addEventListener("ioError", onServiceFailed);			
 		}
 		
-		public function loadMethod():void
+		private function loadMethod():void
 		{
 			var new_call:WebServiceCall = new WebServiceCall(method_name, ws.getMethodCollection(), ws.getMethodCollection().targetNameSpace, method_args);
 			var soap_action:String = ws.getMethodCollection().targetNameSpace;
@@ -100,11 +100,21 @@ package be.wellconsidered.services
 			}
 		}		
 		
+		/**
+		* Get method name
+		* 
+		* @return	Name of the method
+		*/
 		public function get method():String
 		{
 			return method_name;
 		}
 		
+		/**
+		* Get arguments of method
+		* 
+		* @return	Array of arguments
+		*/
 		public function get args():Array
 		{
 			return method_args;

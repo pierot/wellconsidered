@@ -20,6 +20,11 @@ package be.wellconsidered.events
 			_data = param_data;
 		}
 		
+		/**
+		* Get data of OperationEvent
+		* 
+		* @return	Object with data
+		*/		
 		public function get data():Object
 		{
 			return _data;

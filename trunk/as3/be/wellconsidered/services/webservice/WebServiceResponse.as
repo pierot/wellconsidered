@@ -165,6 +165,11 @@ package be.wellconsidered.services.webservice
 			}
 		}		
 	
+		/**
+		* Get data
+		* 
+		* @return	Result object
+		*/
 		public function get data():Object
 		{
 			return _data;

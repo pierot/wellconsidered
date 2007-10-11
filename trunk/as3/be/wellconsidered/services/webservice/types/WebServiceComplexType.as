@@ -16,6 +16,11 @@ package be.wellconsidered.services.webservice.types
 			_pars = new Array();
 		}
 			
+		/**
+		* Add WebServiceArgument property
+		* 
+		* @param	WebServiceArgument
+		*/		
 		public function addProp(param_arg:WebServiceArgument):void
 		{
 			_pars.push(param_arg);
