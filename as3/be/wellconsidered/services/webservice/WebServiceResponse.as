@@ -39,7 +39,10 @@ package be.wellconsidered.services.webservice
 			var result_xmllst:XMLList = body_resp_xml.default_nms::[_method_name + "Result"].children();
 		
 			var resp_obj:WebServiceMethodResponse = _method_col.getResponseObject(_response_name);
-	
+			
+			trace(result_xmllst);
+			trace("--------------------------------------------------------------------------------------------------------");
+			
 			_data = parseXMLList(result_xmllst, resp_obj);
 		}
 		
@@ -58,59 +61,71 @@ package be.wellconsidered.services.webservice
 						// ARRAY OF TNS OBJECT
 						resp_obj = _method_col.getComplexObject(resp_wsa.type);
 						
-						return parseXMLList(result_xmllst, resp_obj);
-					}
-					else
-					{
-						resp_obj = _method_col.getComplexObject(resp_wsa.type);
-						
-						// return parseXMLList(result_xmllst, resp_obj);
-						
 						var tmp:Array = new Array();
 						
-						for(var i:int = 0; i < resp_obj._pars.length; i++)
+						for(var i:int = 0; i < result_xmllst.length(); i++)
 						{
 							tmp.push(parseXMLList(result_xmllst[i].children(), resp_obj));
 						}
 						
 						return tmp;
 					}
+					else
+					{
+						resp_obj = _method_col.getComplexObject(resp_wsa.type);
+						
+						return parseXMLList(result_xmllst, resp_obj);
+					}
 				}
 				else
 				{
 					// 1 ITEM
-					return castType(result_xmllst[0].toXMLString(), resp_wsa.type);
+					return castType(result_xmllst[0], resp_wsa.type);
 				}
 			}
 			else
 			{
 				var obj:Object = new Object();
-
+				var arr:Array = new Array();
+				
 				// MEERDERE PROPS
 				for(var j:int = 0; j < result_xmllst.length(); j++)
 				{
 					if(result_xmllst[j].children().length() > 1)
 					{
-						obj[tmp_wsa.name] = parseXMLList(result_xmllst[j].children(), resp_obj);				
+						var tmp_a_wsa:WebServiceArgument = _method_col.getComplexObjectArgument(resp_obj._pars, result_xmllst[j].localName());
+						
+						if(tmp_a_wsa == null)
+						{
+							// ARRAY					
+							arr.push(parseXMLList(result_xmllst[j].children(), resp_obj));
+						}
+						else
+						{
+							var tmp_a_resp_obj:WebServiceComplexType = _method_col.getComplexObject(tmp_a_wsa.type);
+							
+							obj[tmp_a_wsa.name] = new Array();
+							obj[tmp_a_wsa.name] = parseXMLList(result_xmllst[j].children(), tmp_a_resp_obj);
+						}
 					}
 					else
 					{
 						var tmp_wsa:WebServiceArgument = _method_col.getComplexObjectArgument(resp_obj._pars, result_xmllst[j].localName());
-					
+						
 						if(tmp_wsa.isReference())
 						{
 							resp_obj = _method_col.getComplexObject(tmp_wsa.type);
 							
-							obj[tmp_wsa.name] = parseXMLList(result_xmllst[j].children(), resp_obj);			
+							// obj[tmp_wsa.name] = parseXMLList(result_xmllst[j].children(), resp_obj);			
 						}
 						else
 						{
-							obj[tmp_wsa.name] = castType(result_xmllst[j], tmp_wsa.type);
+							obj[tmp_wsa.name] = castType(result_xmllst[j], tmp_wsa.type);	
 						}
 					}
 				}
 				
-				return obj;
+				return arr.length> 0 ? arr : obj;
 			}
 		}
 		
