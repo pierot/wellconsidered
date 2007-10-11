@@ -22,6 +22,7 @@ package be.wellconsidered.tests
 		private var ws:WebService;
 		private var ws2:WebService;
 		private var ws3:WebService;
+		private var ws4:WebService;
 		
 		private var output:TextField;
 		
@@ -29,9 +30,10 @@ package be.wellconsidered.tests
 		{
 			tracing("START TEST");
 			
-			ws = new WebService("http://webservices.microsite.be/mora/ws_mora.asmx?wsdl");
-			ws2 = new WebService("http://webservices.microsite.be/wigw2/service.asmx?wsdl");
-			ws3 = new WebService("http://www.webservicex.net/WeatherForecast.asmx?wsdl");
+			// ws = new WebService("http://webservices.microsite.be/mora/ws_mora.asmx?wsdl");
+			// ws2 = new WebService("http://webservices.microsite.be/wigw2/service.asmx?wsdl");
+			// ws3 = new WebService("http://www.webservicex.net/WeatherForecast.asmx?wsdl");
+			ws4 = new WebService("http://webservices.microsite.be/fristi_droom/service.asmx?WSDL");
 
 			init();
 		}
@@ -40,6 +42,7 @@ package be.wellconsidered.tests
 		{
 			tracing("INIT");
 			
+			/*
 			var o1:Operation = new Operation(ws);
 			
 			o1.addEventListener(OperationEvent.COMPLETE, onResult);
@@ -61,7 +64,15 @@ package be.wellconsidered.tests
 			o3.addEventListener(OperationEvent.COMPLETE, onResult);
 			o3.addEventListener(OperationEvent.FAILED, onFault);
 			
-			o3.GetWeatherByPlaceName("new york");	
+			o3.GetWeatherByPlaceName("new york");		
+			*/
+			
+			var o4:Operation = new Operation(ws4);
+			
+			o4.addEventListener(OperationEvent.COMPLETE, onResult);
+			o4.addEventListener(OperationEvent.FAILED, onFault);
+			
+			o4.PageLoadGallery("", "", 0);				
 		}		
 		
 		private function onResult(e:OperationEvent):void
