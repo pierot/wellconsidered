@@ -1,11 +1,7 @@
 /**
 * @author Pieter Michels
 * 
-* Test Webservice:
-* 
 * 	new WebServiceTest();
-* 
-* 	eh voila;
 */
 
 package be.wellconsidered.tests 
@@ -28,7 +24,7 @@ package be.wellconsidered.tests
 		
 		public function WebServiceTest()
 		{
-			tracing("START TEST");
+			tracing("START WEBSERVICE TEST");
 			
 			ws = new WebService("http://webservices.microsite.be/mora/ws_mora.asmx?wsdl");
 			ws2 = new WebService("http://webservices.microsite.be/wigw2/service.asmx?wsdl");
@@ -75,7 +71,7 @@ package be.wellconsidered.tests
 		
 		private function onResult(e:OperationEvent):void
 		{
-			trace("------------------------- ONRESULT -------------------------");
+			trace("---------------------- ONRESULT ----------------------");
 			
 			tracing("DATA : " + e.data);
 			
