@@ -40,8 +40,8 @@ package be.wellconsidered.services.webservice
 		
 			var resp_obj:WebServiceMethodResponse = _method_col.getResponseObject(_response_name);
 			
-			trace(result_xmllst);
-			trace("--------------------------------------------------------------------------------------------------------");
+			// trace(result_xmllst);
+			// trace("--------------------------------------------------------------------------------------------------------");
 			
 			_data = parseXMLList(result_xmllst, resp_obj);
 		}
