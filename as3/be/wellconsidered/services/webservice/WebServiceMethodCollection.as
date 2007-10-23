@@ -201,6 +201,7 @@ package be.wellconsidered.services.webservice
 		{
 			for(var i:int = 0; i < param_a.length; i++)
 			{
+				trace("?" + param_a[i].name);
 				if(param_a[i].name == param_name){ return param_a[i]; break; }
 			}
 			

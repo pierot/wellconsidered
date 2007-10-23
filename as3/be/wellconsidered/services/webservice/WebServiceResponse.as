@@ -114,6 +114,11 @@ package be.wellconsidered.services.webservice
 						
 						var tmp_wsa:WebServiceArgument = _method_col.getComplexObjectArgument(resp_obj._pars, result_xmllst[j].localName());
 						
+						if(tmp_wsa == null)
+						{
+							trace(result_xmllst);
+						}
+						
 						if(tmp_wsa.isReference())
 						{
 							resp_obj = _method_col.getComplexObject(tmp_wsa.type);
