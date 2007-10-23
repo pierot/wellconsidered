@@ -17,5 +17,7 @@
 <classEntry path="be.wellconsidered.tests.WebServiceTest"/>
 </includeClasses>
 <includeResources/>
-<namespaceManifests/>
+<namespaceManifests>
+<namespaceManifestEntry manifest="manifest.xml" namespace="http://www.wellconsidered.be"/>
+</namespaceManifests>
 </flexLibProperties>
