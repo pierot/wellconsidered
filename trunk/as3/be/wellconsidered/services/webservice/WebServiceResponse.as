@@ -40,8 +40,8 @@ package be.wellconsidered.services.webservice
 		
 			var resp_obj:WebServiceMethodResponse = _method_col.getResponseObject(_response_name);
 			
-			// trace(result_xmllst);
-			// trace("--------------------------------------------------------------------------------------------------------");
+			trace(result_xmllst);
+			trace("--------------------------------------------------------------------------------------------------------");
 			
 			_data = parseXMLList(result_xmllst, resp_obj);
 		}
@@ -110,22 +110,11 @@ package be.wellconsidered.services.webservice
 					}
 					else
 					{
-						trace(result_xmllst[j].localName());
-						
 						var tmp_wsa:WebServiceArgument = _method_col.getComplexObjectArgument(resp_obj._pars, result_xmllst[j].localName());
 						
 						if(tmp_wsa == null)
 						{
-							trace(result_xmllst);
-						}
-						
-						if(tmp_wsa.isReference())
-						{
-							resp_obj = _method_col.getComplexObject(tmp_wsa.type);
-							
-							trace("REFERENCE? FOR WHAT? (" + tmp_wsa.type + ")");
-							
-							// obj[tmp_wsa.name] = parseXMLList(result_xmllst[j].children(), resp_obj);			
+							arr.push(parseXMLList(result_xmllst[j].children(), resp_obj));			
 						}
 						else
 						{
@@ -134,7 +123,7 @@ package be.wellconsidered.services.webservice
 					}
 				}
 				
-				return arr.length > 0 ? arr : obj;
+				return arr.length> 0 ? arr : obj;
 			}
 		}
 		
