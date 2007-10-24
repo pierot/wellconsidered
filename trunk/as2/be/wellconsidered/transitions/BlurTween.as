@@ -37,7 +37,8 @@ class be.wellconsidered.transitions.BlurTween
 	{
 		clearTween();
 		
-		_blurTween = new Tween(this, "blur", Strong.easeOut, _value, target, speed, true);               
+		_blurTween = new Tween(this, "blur", Strong.easeOut, _value, target, speed, true);   
+		_blurTween.onMotionFinished = arguments[3];
 	}
 
 	/**
