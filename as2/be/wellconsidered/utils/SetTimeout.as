@@ -20,7 +20,7 @@ class be.wellconsidered.utils.SetTimeout
 	*/
 	function SetTimeout(callBack:Function, callBackRoot:Object, delay:Number)
 	{
-		_callBackArgs = (arguments[3] == "nextFrame") ? [(callBackRoot._currentframe + 1)] : arguments.slice(3);
+		_callBackArgs = arguments.slice(3);
 		  
 		var $self:Object = this;
 		_timerInterval = setInterval(function ()
