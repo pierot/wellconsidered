@@ -69,7 +69,7 @@ package be.wellconsidered.tests
 			// o4.PageLoadGallery("", "", 0);				
 		}		
 		
-		private function onResult(e:OperationEvent):void
+		protected function onResult(e:OperationEvent):void
 		{
 			trace("---------------------- ONRESULT ----------------------");
 			
@@ -78,7 +78,7 @@ package be.wellconsidered.tests
 			traceObject(e.data);
 		}
 		
-		private function traceObject(data:*, tabs:String = ""):void
+		protected function traceObject(data:*, tabs:String = ""):void
 		{
 			for(var el:String in data)
 			{
@@ -88,11 +88,11 @@ package be.wellconsidered.tests
 			}
 		}
 
-		private function onFault(e:OperationEvent):void { tracing(e.data); }		
+		protected function onFault(e:OperationEvent):void { tracing(e.data); }		
 		
 		public function addTracer(param_txt:TextField):void { output = param_txt; }
 		
-		private function tracing(... args):void
+		protected function tracing(... args):void
 		{
 			trace(args);
 			
