@@ -17,7 +17,7 @@ package be.wellconsidered.services
 	import be.wellconsidered.events.WebServiceMethodCollectionEvent
 	import be.wellconsidered.events.WebServiceEvent;
 	
-	dynamic public class WebService extends EventDispatcher
+	public class WebService extends EventDispatcher
 	{
 		private var url_ws:String;
 		private var urllserv_desc:URLLoader;
