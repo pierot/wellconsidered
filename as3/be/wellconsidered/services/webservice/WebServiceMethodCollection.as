@@ -4,9 +4,8 @@
 
 package be.wellconsidered.services.webservice 
 {
-	import be.wellconsidered.services.webservice.types.*;
-	
 	import be.wellconsidered.events.WebServiceMethodCollectionEvent;
+	import be.wellconsidered.services.webservice.types.*;
 	
 	import flash.events.EventDispatcher;
 	
@@ -34,7 +33,7 @@ package be.wellconsidered.services.webservice
 		{
 			// trace(param_xml);
 			
-			var types_nms:Namespace = param_xml.namespace("wsdl");
+			var types_nms:Namespace = param_xml.namespace();
 			
 			try
 			{
@@ -44,14 +43,28 @@ package be.wellconsidered.services.webservice
 			{/* trace(e.message); */}
 			
 			var types_xml:XML = param_xml.types_nms::types[0];
-			var s_nms:Namespace = types_xml.namespace("s");
 			
-			var els_xml:XML = types_xml.s_nms::schema[0];
+			if(types_xml.children().length > 0)
+			{
+				// var s_nms:Namespace = types_xml.namespace("s");
+				var s_nms:Namespace = types_xml.children()[0].namespace();
+				
+				var els_xml:XML = types_xml.s_nms::schema[0];
 			
-			extractMethods(els_xml, s_nms);
-			extractComplexType(els_xml, s_nms);
+				extractMethods(els_xml, s_nms);
+				extractComplexType(els_xml, s_nms);
+			}
+			else
+			{
+				extractMethods2(els_xml, s_nms);
+			}
 			
 			dispatchEvent(new WebServiceMethodCollectionEvent(WebServiceMethodCollectionEvent.COMPLETE));
+		}
+		
+		private function extractMethods2():void
+		{
+			
 		}
 		
 		private function extractMethods(param_schema_xml:XML, param_nms:Namespace):void
