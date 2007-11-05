@@ -62,7 +62,7 @@ package be.wellconsidered.services.webservice
 			dispatchEvent(new WebServiceMethodCollectionEvent(WebServiceMethodCollectionEvent.COMPLETE));
 		}
 		
-		private function extractMethods2():void
+		private function extractMethods2(param_schema_xml:XML, param_nms:Namespace):void
 		{
 			
 		}
