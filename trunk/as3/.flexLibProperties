@@ -1,20 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <flexLibProperties version="1">
 <includeClasses>
-<classEntry path="be.wellconsidered.events.OperationEvent"/>
-<classEntry path="be.wellconsidered.events.WebServiceEvent"/>
-<classEntry path="be.wellconsidered.events.WebServiceMethodCollectionEvent"/>
-<classEntry path="be.wellconsidered.graphics.reflect.Reflect"/>
-<classEntry path="be.wellconsidered.services.Operation"/>
-<classEntry path="be.wellconsidered.services.WebService"/>
-<classEntry path="be.wellconsidered.services.webservice.WebServiceCall"/>
-<classEntry path="be.wellconsidered.services.webservice.WebServiceMethodCollection"/>
-<classEntry path="be.wellconsidered.services.webservice.WebServiceResponse"/>
 <classEntry path="be.wellconsidered.services.webservice.types.WebServiceArgument"/>
 <classEntry path="be.wellconsidered.services.webservice.types.WebServiceComplexType"/>
-<classEntry path="be.wellconsidered.services.webservice.types.WebServiceMethod"/>
+<classEntry path="be.wellconsidered.events.WebServiceEvent"/>
+<classEntry path="be.wellconsidered.services.WebService"/>
+<classEntry path="be.wellconsidered.services.webservice.WebServiceResponse"/>
+<classEntry path="be.wellconsidered.events.WebServiceMethodCollectionEvent"/>
+<classEntry path="be.wellconsidered.utils.HostURL"/>
 <classEntry path="be.wellconsidered.services.webservice.types.WebServiceMethodResponse"/>
+<classEntry path="be.wellconsidered.graphics.reflect.Reflect"/>
+<classEntry path="be.wellconsidered.services.webservice.WebServiceMethodCollection"/>
+<classEntry path="be.wellconsidered.events.OperationEvent"/>
+<classEntry path="be.wellconsidered.services.Operation"/>
+<classEntry path="be.wellconsidered.services.webservice.types.WebServiceMethod"/>
 <classEntry path="be.wellconsidered.tests.WebServiceTest"/>
+<classEntry path="be.wellconsidered.services.webservice.WebServiceCall"/>
+<classEntry path="be.wellconsidered.utils.html.HtmlEntities"/>
 </includeClasses>
 <includeResources/>
 <namespaceManifests>
