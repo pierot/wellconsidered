@@ -26,24 +26,29 @@ package be.wellconsidered.services.webservice
 		
 		private function createResponseObject():void
 		{
-			// trace(_resp_xml);
+			// trace(_resp_xml);		
 			
-			var soap_nms:Namespace = new Namespace("http://schemas.xmlsoap.org/soap/envelope/");
+			var soap_nms:Namespace = _resp_xml.namespace();
 			var default_nms:Namespace = new Namespace(_method_col.targetNameSpace);
-			
 			var body_resp_xml:XMLList = _resp_xml.soap_nms::Body.children();
 			
 			_response_name = body_resp_xml[0].localName();
-			_method_name = _response_name.split("Response")[0];
 			
-			var result_xmllst:XMLList = body_resp_xml.default_nms::[_method_name + "Result"].children();
-		
-			var resp_obj:WebServiceMethodResponse = _method_col.getResponseObject(_response_name);
+			if(_method_col.isPortType())
+			{			
+				// var resultport_xmllst:XMLList = body_resp_xml.default_nms::[_response_name].children();
 			
-			// trace(result_xmllst);
-			// trace("--------------------------------------------------------------------------------------------------------");
+				_data = castType(body_resp_xml.result, _method_col.getResponseObject(_response_name)._pars[0].type);	
+			}
+			else
+			{
+				_method_name = _response_name.split("Response")[0];
 			
-			_data = parseXMLList(result_xmllst, resp_obj);
+				var resp_obj:WebServiceMethodResponse = _method_col.getResponseObject(_response_name);
+				var result_xmllst:XMLList = body_resp_xml.default_nms::[_method_name + "Result"].children();
+			
+				_data = parseXMLList(result_xmllst, resp_obj);			
+			}
 		}
 		
 		private function parseXMLList(result_xmllst:XMLList, resp_obj:*):*
@@ -143,6 +148,11 @@ package be.wellconsidered.services.webservice
 		{
 			switch(param_t.toLowerCase())
 			{
+				case "boolean":
+					
+					return Boolean(param_o);
+						
+					break;				
 				case "int":
 					
 					return int(param_o);
@@ -152,6 +162,7 @@ package be.wellconsidered.services.webservice
 				case "decimal":
 				case "float":
 				case "double":
+				case "long":
 				
 					return Number(param_o);
 						

@@ -4,14 +4,14 @@
 
 package be.wellconsidered.services 
 {
-	import flash.net.*;
-	
-	import flash.events.EventDispatcher;
-	import flash.events.Event;
-	import flash.events.ErrorEvent;
-	
-	import be.wellconsidered.services.webservice.*;
 	import be.wellconsidered.events.OperationEvent;
+	import be.wellconsidered.services.webservice.*;
+	
+	import flash.events.ErrorEvent;
+	import flash.events.Event;
+	import flash.events.EventDispatcher;
+	
+	import flash.net.*;
 	
 	import flash.utils.Proxy;
 	import flash.utils.flash_proxy;
@@ -48,15 +48,9 @@ package be.wellconsidered.services
 			var new_call:WebServiceCall = new WebServiceCall(method_name, ws.getMethodCollection(), ws.getMethodCollection().targetNameSpace, method_args);
 			var soap_action:String = ws.getMethodCollection().targetNameSpace;
 			var trailing_slash:Number = soap_action.lastIndexOf("/");
+			var b_slash:Boolean = (trailing_slash == -1 || trailing_slash < soap_action.length - 2);
 			
-			if(trailing_slash == -1 || trailing_slash < soap_action.length - 2)
-			{
-				soap_action += "/" + method_name;
-			}
-			else
-			{
-				soap_action += method_name;
-			}
+			soap_action += b_slash ? "/" + method_name : method_name;
 			
 			// url_request.requestHeaders.push(new URLRequestHeader("Content-Type", "application/soap+xml"));
 			url_request.requestHeaders.push(new URLRequestHeader("Content-Type", "text/xml; charset=utf-8"));

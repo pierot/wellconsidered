@@ -6,10 +6,9 @@
 
 package be.wellconsidered.tests 
 {
-	import be.wellconsidered.services.WebService;
-	import be.wellconsidered.services.Operation;
-	
 	import be.wellconsidered.events.OperationEvent;
+	import be.wellconsidered.services.Operation;
+	import be.wellconsidered.services.WebService;
 	
 	import flash.text.TextField;
 	
@@ -24,54 +23,63 @@ package be.wellconsidered.tests
 		
 		public function WebServiceTest()
 		{
-			tracing("START WEBSERVICE TEST");
-			
-			ws = new WebService("http://webservices.microsite.be/mora/ws_mora.asmx?wsdl");
-			ws2 = new WebService("http://webservices.microsite.be/wigw2/service.asmx?wsdl");
-			ws3 = new WebService("http://www.webservicex.net/WeatherForecast.asmx?wsdl");
-			ws4 = new WebService("http://webservices.microsite.be/fristi_droom/service.asmx?WSDL");
-
-			init();
+			tracing("INIT WEBSERVICE TEST");
 		}
-
-		private function init():void
+		
+		public function testConcentra():void
 		{
-			tracing("INIT");
+			var w:WebService = new WebService("http://webservices.microsite.be/concentra/ws/service.asmx?wsdl");
+			var o:Operation = new Operation(w);
 			
-			var o1:Operation = new Operation(ws);
+			o.addEventListener(OperationEvent.COMPLETE, onResult);
+			o.addEventListener(OperationEvent.FAILED, onFault);
 			
-			o1.addEventListener(OperationEvent.COMPLETE, onResult);
-			o1.addEventListener(OperationEvent.FAILED, onFault);
+			o.getNaw("6581df8b-1c1b-495b-8a5e-814e46ae66ae");
+		}		
+		
+		public function testMXR():void
+		{
+			var w:WebService = new WebService("http://musicmixer.rmxr.com/zine-eu/Mixer/Portal?wsdl");
+			var o:Operation = new Operation(w);
 			
-			// o1.getWinners();
+			o.addEventListener(OperationEvent.COMPLETE, onResult);
+			o.addEventListener(OperationEvent.FAILED, onFault);
 			
-			var o2:Operation = new Operation(ws2);
+			o.getMostRecentRemixesCount();
+		}		
+
+		public function testMora():void
+		{
+			var ws:WebService = new WebService("http://webservices.microsite.be/mora/ws_mora.asmx?wsdl");
+			var o:Operation = new Operation(ws);
+			
+			o.addEventListener(OperationEvent.COMPLETE, onResult);
+			o.addEventListener(OperationEvent.FAILED, onFault);
+			
+			o.getWinners();
+		}
+		
+		public function testWeather():void
+		{
+			var ws:WebService = new WebService("http://www.webservicex.net/WeatherForecast.asmx?wsdl");
+			var o:Operation = new Operation(ws);
+			
+			o.addEventListener(OperationEvent.COMPLETE, onResult);
+			o.addEventListener(OperationEvent.FAILED, onFault);
+			
+			o.GetWeatherByPlaceName("new york");
+			
+			var o2:Operation = new Operation(ws);
 			
 			o2.addEventListener(OperationEvent.COMPLETE, onResult);
 			o2.addEventListener(OperationEvent.FAILED, onFault);
 			
-			// o2.doLogin("pieter.michels@proximity.bbdo.be", "test", 0);
-			// o2.getProfiel("7aa88918-462a-4590-9f86-5a748e0f9c7c");
-			// o2.updateProfiel2({Guid: "7aa88918-462a-4590-9f86-5a748e0f9c7c", vnaam: "Pieter" + Math.round(Math.random() * 9999)});
-			
-			var o3:Operation = new Operation(ws3);
-			
-			o3.addEventListener(OperationEvent.COMPLETE, onResult);
-			o3.addEventListener(OperationEvent.FAILED, onFault);
-			
-			o3.GetWeatherByPlaceName("new york");		
-			
-			var o4:Operation = new Operation(ws4);
-			
-			o4.addEventListener(OperationEvent.COMPLETE, onResult);
-			o4.addEventListener(OperationEvent.FAILED, onFault);
-			
-			// o4.PageLoadGallery("", "", 0);				
+			o2.GetWeatherByPlaceName("las vegas");
 		}		
 		
 		protected function onResult(e:OperationEvent):void
 		{
-			trace("---------------------- ONRESULT ----------------------");
+			trace("---- ONRESULT ----");
 			
 			tracing("DATA : " + e.data);
 			
