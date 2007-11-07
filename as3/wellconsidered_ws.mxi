@@ -1,0 +1,28 @@
+<macromedia-extension name="wellconsidered WebService" version="1.0" type="flashcomponent">
+
+	<products>
+		<product name="Flash CS3" version="9" primary="true" /> 
+	</products> 
+	
+	<author name="Pieter Michels" />
+
+	<description>
+		<![CDATA[
+			WebService implementation in AS3 for Flash CS3 IDE.
+		]]>
+	</description>
+
+	<ui-access>
+		<![CDATA[
+			To use: (Windows >) Components > wellconsidered.
+			Drag the threee classes to your library.
+		]]>
+	</ui-access>
+
+	<files>
+		<file name="bin/wellconsidered.swc" destination="$flash/Components/wellconsidered" shared="false" />
+	</files>
+
+	<configuration-changes></configuration-changes>
+
+</macromedia-extension>
