@@ -17,6 +17,8 @@ package be.wellconsidered.services.webservice
 		
 		private var _tgtnms:String;
 		
+		private var _porttype:Boolean = false;
+		
 		public function WebServiceMethodCollection()
 		{
 			_methods_arr = new Array();
@@ -33,22 +35,21 @@ package be.wellconsidered.services.webservice
 		{
 			// trace(param_xml);
 			
-			var types_nms:Namespace = param_xml.namespace();
+			var p_nms:Namespace = param_xml.namespace();
+			var types_xml:XML = param_xml.p_nms::types[0];
+			var porttypes_xml:XML = param_xml.p_nms::portType[0];
+			var messages_xmllst:XMLList = param_xml.p_nms::message;
 			
 			try
 			{
 				_tgtnms = param_xml.@targetNamespace;
 			}
 			catch(e:Error)
-			{/* trace(e.message); */}
+			{ /*trace(e.message);*/ }
 			
-			var types_xml:XML = param_xml.types_nms::types[0];
-			
-			if(types_xml.children().length > 0)
+			if(types_xml.children().length() > 0)
 			{
-				// var s_nms:Namespace = types_xml.namespace("s");
 				var s_nms:Namespace = types_xml.children()[0].namespace();
-				
 				var els_xml:XML = types_xml.s_nms::schema[0];
 			
 				extractMethods(els_xml, s_nms);
@@ -56,15 +57,50 @@ package be.wellconsidered.services.webservice
 			}
 			else
 			{
-				extractMethods2(els_xml, s_nms);
+				_porttype = true;
+				
+				var port_nms:Namespace = porttypes_xml.children()[0].namespace();
+				var port_name:String = porttypes_xml.@name;
+				
+				extractPortMethods(porttypes_xml[0], port_nms, port_name, messages_xmllst);
 			}
 			
 			dispatchEvent(new WebServiceMethodCollectionEvent(WebServiceMethodCollectionEvent.COMPLETE));
 		}
 		
-		private function extractMethods2(param_schema_xml:XML, param_nms:Namespace):void
+		private function extractPortMethods(param_schema_xml:XML, param_nms:Namespace, param_s_name:String, param_mes_xmllst:XMLList):void
 		{
-			
+			for each(var i:XML in param_schema_xml.param_nms::operation)
+			{
+				try
+				{
+					// var par_order:Array = i.@parameterOrder.split(" ");
+					
+					// METHODS
+					var method:WebServiceMethod = new WebServiceMethod(i.@name);
+					var m_message:XML = param_mes_xmllst.(attribute("name") == (param_s_name + "_" + method._name))[0];
+
+					for each(var j:XML in m_message.param_nms::part)
+					{				
+						method.addArg(new WebServiceArgument(j.@name, j.@type));
+					}
+					
+					_methods_arr.push(method);					
+					
+					// RESPONSES
+					var response:WebServiceMethodResponse = new WebServiceMethodResponse(i.param_nms::output.@message.split(":")[1].split("_")[1]);
+					var r_message:XML = param_mes_xmllst.(attribute("name") == (param_s_name + "_" + response._name))[0];
+					
+					for each(var k:XML in r_message.param_nms::part)
+					{				
+						response.addPar(new WebServiceArgument(k.@name, k.@type));
+					}
+					
+					_response_arr.push(response);					
+				}
+				catch(e:Error)
+				{trace(e.message, e.getStackTrace());}
+			}		
 		}
 		
 		private function extractMethods(param_schema_xml:XML, param_nms:Namespace):void
@@ -116,9 +152,7 @@ package be.wellconsidered.services.webservice
 				try
 				{
 					var tmp_sequence:XML = i.param_nms::sequence[0];
-					
 					var complex:WebServiceComplexType = new WebServiceComplexType(i.@name);
-					
 					var tmp_lst:XMLList = tmp_sequence == null ? new XMLList() : tmp_sequence.param_nms::element;
 					
 					for each(var m:XML in tmp_lst)
@@ -179,6 +213,7 @@ package be.wellconsidered.services.webservice
 		{
 			for(var i:int = 0; i < _response_arr.length; i++)
 			{
+				// trace(_response_arr[i]._name + " == " + param_name);
 				if(_response_arr[i]._name == param_name){ return _response_arr[i]; break; }
 			}
 			
@@ -246,5 +281,15 @@ package be.wellconsidered.services.webservice
 		{
 			return _tgtnms;
 		}
+		
+		/**
+		* Is port type?
+		* 
+		* @return	Boolean
+		*/
+		public function isPortType():Boolean
+		{
+			return _porttype;
+		}		
 	}
 }

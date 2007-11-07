@@ -4,18 +4,15 @@
 
 package be.wellconsidered.services
 {
-	import flash.net.*;
-	
-    import flash.events.Event;
-	import flash.events.ErrorEvent;
-	import flash.events.IOErrorEvent;
-	import flash.events.EventDispatcher;
-	import flash.events.SecurityErrorEvent;
-	
+	import be.wellconsidered.events.WebServiceEvent;
+	import be.wellconsidered.events.WebServiceMethodCollectionEvent;
 	import be.wellconsidered.services.webservice.*;
 	
-	import be.wellconsidered.events.WebServiceMethodCollectionEvent
-	import be.wellconsidered.events.WebServiceEvent;
+	import flash.events.Event;
+	import flash.events.EventDispatcher;
+	import flash.events.IOErrorEvent;
+	import flash.events.SecurityErrorEvent;
+	import flash.net.*;
 	
 	public class WebService extends EventDispatcher
 	{
@@ -90,13 +87,19 @@ package be.wellconsidered.services
 			{
 				for(var i:int = 0; i < qeue_arr.length; i++)
 				{
+					// trace("QEUE (" + i + ") : " + qeue_arr[i].method);
+					
 					if(method_col.methodExists(qeue_arr[i].method))
 					{
 						qeue_arr[i].loadMethod();
 					}
 					
-					qeue_arr.splice(i, 1);
+					// NOT NEEDED WE CAN JUST INIT ARRAY AGAIN SOME LINES BELOW
+					// qeue_arr.splice(i, 1);
 				}
+				
+				qeue_arr = null;
+				qeue_arr = new Array();
 			}
 		}
 		
@@ -108,7 +111,7 @@ package be.wellconsidered.services
 		*/
 		public function addOperationToQeue(param_o:Operation):void
 		{
-			// trace("ADD OPERATION TO QEUE");
+			// trace("ADD OPERATION TO QEUE (" + param_o.method + ")");
 			
 			qeue_arr.push(param_o);
 		}
