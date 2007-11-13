@@ -45,7 +45,8 @@ package be.wellconsidered.tests
 			o.addEventListener(OperationEvent.COMPLETE, onResult);
 			o.addEventListener(OperationEvent.FAILED, onFault);
 			
-			o.getMostRecentRemixesCount();
+			// o.getMostRecentRemixesCount();
+			o.getTopRatedRemixes(0, 10);
 		}		
 
 		public function testMora():void

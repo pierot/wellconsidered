@@ -29,8 +29,19 @@ package be.wellconsidered.services.webservice
 	
 		private function createSoapCall():void
 		{
-			var add_node:XML = <{_method} xmlns={_tgtnms} />
+			var add_node:XML;
 			
+			// NAMESPACE OF NIET?
+			if(_method_col.getBindingObject(_method).getInputNamespace() != null)
+			{
+				add_node = <{"wc:" + _method} xmlns:wc={_method_col.getBindingObject(_method).getInputNamespace()} />
+			}
+			else
+			{
+				add_node = <{_method} xmlns={_tgtnms} />
+			}
+			
+			// OPBOUWEN
 			if(_args.length > 1 || typeof(_args[0]) != "object")
 			{
 				for(var j:int = 0; j < _wsmethod._args.length; j++)
@@ -75,7 +86,7 @@ package be.wellconsidered.services.webservice
 				</soap12:Envelope>
 				;
 				
-			// trace(_call);
+			trace(_call);
 		}
 		
 		/**
