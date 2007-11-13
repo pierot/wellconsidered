@@ -14,6 +14,7 @@ package be.wellconsidered.services.webservice
 		private var _methods_arr:Array;
 		private var _complex_arr:Array;
 		private var _response_arr:Array;
+		private var _bindings_arr:Array;
 		
 		private var _tgtnms:String;
 		
@@ -24,6 +25,7 @@ package be.wellconsidered.services.webservice
 			_methods_arr = new Array();
 			_response_arr = new Array();
 			_complex_arr = new Array();
+			_bindings_arr = new Array();
 		}
 		
 		/**
@@ -38,6 +40,7 @@ package be.wellconsidered.services.webservice
 			var p_nms:Namespace = param_xml.namespace();
 			var types_xml:XML = param_xml.p_nms::types[0];
 			var porttypes_xml:XML = param_xml.p_nms::portType[0];
+			var bindings_xml:XML = param_xml.p_nms::binding[0];
 			var messages_xmllst:XMLList = param_xml.p_nms::message;
 			
 			try
@@ -49,23 +52,54 @@ package be.wellconsidered.services.webservice
 			
 			if(types_xml.children().length() > 0)
 			{
+				// METHODS / COMPLEX TYPES
 				var s_nms:Namespace = types_xml.children()[0].namespace();
-				var els_xml:XML = types_xml.s_nms::schema[0];
 			
-				extractMethods(els_xml, s_nms);
-				extractComplexType(els_xml, s_nms);
+				extractMethods(types_xml.s_nms::schema[0], s_nms);
+				extractComplexType(types_xml.s_nms::schema[0], s_nms);
 			}
 			else
 			{
+				// PORTMETHODS
 				_porttype = true;
 				
-				var port_nms:Namespace = porttypes_xml.children()[0].namespace();
-				var port_name:String = porttypes_xml.@name;
-				
-				extractPortMethods(porttypes_xml[0], port_nms, port_name, messages_xmllst);
+				extractPortMethods(porttypes_xml[0], porttypes_xml.children()[0].namespace(), porttypes_xml.@name, messages_xmllst);
 			}
 			
+			// BINDINGS
+			extractBindings(bindings_xml[0], bindings_xml.namespace());
+			
 			dispatchEvent(new WebServiceMethodCollectionEvent(WebServiceMethodCollectionEvent.COMPLETE));
+		}
+		
+		private function extractBindings(param_schema_xml:XML, param_nms:Namespace):void
+		{
+			trace("EXTRACT BINDINGS");
+			
+			trace(param_schema_xml);
+			
+			var op_nms:Namespace = param_schema_xml.namespace("soap");
+
+			for each(var i:XML in param_schema_xml.param_nms::operation)
+			{
+				try
+				{
+					var binding:WebServiceBinding = new WebServiceBinding(i.@name);
+					
+					var input_xml:XML = i.param_nms::input[0];
+					var output_xml:XML = i.param_nms::output[0];
+					
+					binding.addInputNamespace(input_xml.op_nms::body[0].attribute("namespace"));
+					binding.addInputUse(input_xml.op_nms::body[0].attribute("use"));
+					
+					binding.addOutputNamespace(output_xml.op_nms::body[0].attribute("namespace"));
+					binding.addOutputUse(output_xml.op_nms::body[0].attribute("use"));
+					
+					_bindings_arr.push(binding);
+				}
+				catch(e:Error)
+				{trace(e.message, e.getStackTrace());}
+			}
 		}
 		
 		private function extractPortMethods(param_schema_xml:XML, param_nms:Namespace, param_s_name:String, param_mes_xmllst:XMLList):void
@@ -235,7 +269,24 @@ package be.wellconsidered.services.webservice
 			}
 			
 			return null;
-		}	
+		}
+		
+		/**
+		* Get Binding object
+		* 
+		* @param	Name of method
+		* 
+		* @return	WebServiceBinding
+		*/
+		public function getBindingObject(param_name:String):WebServiceBinding
+		{
+			for(var i:int = 0; i < _bindings_arr.length; i++)
+			{
+				if(_bindings_arr[i]._name == param_name){ return _bindings_arr[i]; break; }
+			}
+			
+			return null;
+		}
 		
 		/**
 		* Get WebServiceArgument from a ComplexObject

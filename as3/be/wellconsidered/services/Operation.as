@@ -46,6 +46,7 @@ package be.wellconsidered.services
 		public function loadMethod():void
 		{
 			var new_call:WebServiceCall = new WebServiceCall(method_name, ws.getMethodCollection(), ws.getMethodCollection().targetNameSpace, method_args);
+			
 			var soap_action:String = ws.getMethodCollection().targetNameSpace;
 			var trailing_slash:Number = soap_action.lastIndexOf("/");
 			var b_slash:Boolean = (trailing_slash == -1 || trailing_slash < soap_action.length - 2);
