@@ -1,0 +1,40 @@
+Folder PATH listing for volume BOOT
+Volume serial number is 54B3-1B3D
+C:\CLASSES\WELLCONSIDERED\AS3\BE
+|   dir_struct.txt
+|   
+\---wellconsidered
+    +---events
+    |       OperationEvent.as
+    |       WebServiceEvent.as
+    |       WebServiceMethodCollectionEvent.as
+    |       
+    +---graphics
+    |   \---reflect
+    |           Reflect.as
+    |           
+    +---services
+    |   |   Operation.as
+    |   |   WebService.as
+    |   |   
+    |   \---webservice
+    |       |   WebServiceCall.as
+    |       |   WebServiceMethodCollection.as
+    |       |   WebServiceResponse.as
+    |       |   
+    |       \---types
+    |               WebServiceArgument.as
+    |               WebServiceBinding.as
+    |               WebServiceComplexType.as
+    |               WebServiceMethod.as
+    |               WebServiceMethodResponse.as
+    |               
+    +---tests
+    |       WebServiceTest.as
+    |       
+    \---utils
+        |   HostURL.as
+        |   
+        \---html
+                HtmlEntities.as
+                
