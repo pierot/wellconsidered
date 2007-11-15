@@ -11,6 +11,8 @@ package be.wellconsidered.tests
 	import be.wellconsidered.services.WebService;
 	
 	import flash.text.TextField;
+	import flash.utils.Timer;
+	import flash.events.TimerEvent;
 	
 	public class WebServiceTest
 	{
@@ -26,6 +28,31 @@ package be.wellconsidered.tests
 			tracing("INIT WEBSERVICE TEST");
 		}
 		
+		//*****************************************************************************************//
+		
+		public function testAll():void
+		{
+			var tmp_1_tmr:Timer = new Timer(0, 1);
+			tmp_1_tmr.addEventListener(TimerEvent.TIMER_COMPLETE,  function(evt:TimerEvent):void { testConcentra(); });
+			tmp_1_tmr.start();	
+			
+			var tmp_2_tmr:Timer = new Timer(500, 1);
+			tmp_2_tmr.addEventListener(TimerEvent.TIMER_COMPLETE,  function(evt:TimerEvent):void { testKBCHTTPS(); });
+			tmp_2_tmr.start();
+			
+			var tmp_3_tmr:Timer = new Timer(1000, 1);
+			tmp_3_tmr.addEventListener(TimerEvent.TIMER_COMPLETE,  function(evt:TimerEvent):void { testMora(); });
+			tmp_3_tmr.start();
+			
+			var tmp_4_tmr:Timer = new Timer(1500, 1);
+			tmp_4_tmr.addEventListener(TimerEvent.TIMER_COMPLETE,  function(evt:TimerEvent):void { testMXR(); });
+			tmp_4_tmr.start();
+			
+			var tmp_5_tmr:Timer = new Timer(2000, 1);
+			tmp_5_tmr.addEventListener(TimerEvent.TIMER_COMPLETE,  function(evt:TimerEvent):void { testWeather(); });
+			tmp_5_tmr.start();					
+		}
+		
 		public function testConcentra():void
 		{
 			var w:WebService = new WebService("http://webservices.microsite.be/concentra/ws/service.asmx?wsdl");
@@ -35,7 +62,18 @@ package be.wellconsidered.tests
 			o.addEventListener(OperationEvent.FAILED, onFault);
 			
 			o.getNaw("6581df8b-1c1b-495b-8a5e-814e46ae66ae");
-		}		
+		}	
+		
+		public function testKBCHTTPS():void
+		{
+			var w:WebService = new WebService("https://www.kbcworld.be/ws/service.asmx?wsdl");
+			var o:Operation = new Operation(w);
+			
+			o.addEventListener(OperationEvent.COMPLETE, onResult);
+			o.addEventListener(OperationEvent.FAILED, onFault);
+			
+			o.HelloWorld();
+		}	
 		
 		public function testMXR():void
 		{
@@ -76,16 +114,27 @@ package be.wellconsidered.tests
 			o2.addEventListener(OperationEvent.FAILED, onFault);
 			
 			o2.GetWeatherByPlaceName("las vegas");
+		}	
+		
+		//*****************************************************************************************//
+		
+		protected function onFault(e:OperationEvent):void
+		{
+			trace("-------- ONFAULT --------");
+			 
+			tracing("DATA : " + e.data);
 		}		
 		
 		protected function onResult(e:OperationEvent):void
 		{
-			trace("---- ONRESULT ----");
+			trace("-------- ONRESULT --------");
 			
 			tracing("DATA : " + e.data);
 			
 			traceObject(e.data);
 		}
+		
+		//*****************************************************************************************//
 		
 		protected function traceObject(data:*, tabs:String = ""):void
 		{
@@ -95,9 +144,7 @@ package be.wellconsidered.tests
 				
 				traceObject(data[el], tabs + "\t");
 			}
-		}
-
-		protected function onFault(e:OperationEvent):void { tracing(e.data); }		
+		}	
 		
 		public function addTracer(param_txt:TextField):void { output = param_txt; }
 		

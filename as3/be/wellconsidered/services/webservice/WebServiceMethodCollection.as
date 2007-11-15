@@ -73,11 +73,7 @@ package be.wellconsidered.services.webservice
 		}
 		
 		private function extractBindings(param_schema_xml:XML, param_nms:Namespace):void
-		{
-			trace("EXTRACT BINDINGS");
-			
-			trace(param_schema_xml);
-			
+		{		
 			var op_nms:Namespace = param_schema_xml.namespace("soap");
 
 			for each(var i:XML in param_schema_xml.param_nms::operation)
