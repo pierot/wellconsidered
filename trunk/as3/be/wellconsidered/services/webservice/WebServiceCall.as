@@ -86,7 +86,7 @@ package be.wellconsidered.services.webservice
 				</soap12:Envelope>
 				;
 				
-			// trace(_call);
+			trace(_call);
 		}
 		
 		/**
