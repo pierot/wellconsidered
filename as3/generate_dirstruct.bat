@@ -1,1 +1,0 @@
-tree be /f /a > dir_struct.txt
